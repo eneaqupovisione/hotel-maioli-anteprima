@@ -23,9 +23,12 @@
   --passo:14px;              /* passo delle perforazioni */
   /* i posti delle foto: neutri di mezzo tono. Una foto non è mai
      chiara come il campo, se no la proporzione 85/10 non si legge. */
-  --foto-caldo:  #A2968A;
-  --foto-freddo: #7C8A8E;
-  --foto-cupo:   #4C4741;
+  /* Erano tre grigi neutri inventati, e siccome sono le superfici colorate
+     più grandi della pagina facevano sembrare tutto grigio-nero. Ora
+     derivano dalla palette: la sabbia dalla carta, l'acqua dall'azzurro. */
+  --foto-caldo:  #CBB894;   /* carta, ma di una foto: sabbia, pane, legno  */
+  --foto-freddo: #7FA0AE;   /* azzurro smorzato: acqua, cielo, lontananza  */
+  --foto-cupo:   #2F5D70;   /* = azzurro cupo: crepuscolo e ombra, non nero */
 }
 
 body{
@@ -68,7 +71,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .microazione{
   display:inline-block;margin-top:2.6em;font-size:12px;letter-spacing:.16em;
   text-transform:uppercase;text-decoration:none;
-  border-bottom:1px solid var(--filo);padding-bottom:5px;
+  border-bottom:1.5px solid var(--azzurro);padding-bottom:5px;
 }
 .microazione:hover{border-bottom-color:var(--rosso)}
 
@@ -271,7 +274,10 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
    ============================================================ */
 .momento{padding:clamp(92px,13vh,176px) 0;position:relative}
 .momento .intestazione{display:flex;align-items:baseline;gap:18px;margin-bottom:2.6em}
-.momento .ora-blocco{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--rosso)}
+.momento .ora-blocco{
+  font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.18em;
+  color:var(--rosso-cupo);background:var(--carta);padding:5px 10px;
+}
 
 .duetto{display:grid;grid-template-columns:1fr .82fr;gap:96px;align-items:center}
 .terzetto{display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
@@ -479,7 +485,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .camera .posto{--forma:4/3}
 .camera .riga-dati{
   display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-  margin-top:14px;padding-bottom:12px;border-bottom:1px solid var(--filo);
+  margin-top:14px;padding-bottom:12px;border-bottom:1.5px solid var(--azzurro);
 }
 .camera .nome{
   font-family:Fraunces,Georgia,serif;font-weight:200;font-size:clamp(19px,1.7vw,26px);
@@ -488,6 +494,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .camera .prezzo-da{
   font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--rosso);white-space:nowrap;
+  background:var(--carta);padding:5px 9px;
 }
 .camera .letti{
   display:block;margin-top:10px;font-family:"DM Mono",monospace;font-size:10.5px;
@@ -592,6 +599,53 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .segnaposto .tipo{font-size:9px;letter-spacing:.34em;text-transform:uppercase;opacity:.7}
 .segnaposto .soggetto{font-size:12px;letter-spacing:.1em;color:var(--inchiostro)}
 .segnaposto .nota{font-size:9px;letter-spacing:.2em;text-transform:uppercase;opacity:.7}
+
+/* ============================================================
+   PRENOTA E PIEDE
+   Riscritti: le loro regole erano andate perse in una ripulitura.
+   Qui i colori della cartolina stanno tutti nella stessa inquadratura
+   — fondo di carta, filetti azzurri, il rosso solo sul pulsante — ed è
+   il posto giusto per farlo: è l'unico blocco della pagina che è un
+   oggetto e non un racconto.
+   ============================================================ */
+.prenota{padding:clamp(92px,13vh,176px) 0 clamp(80px,11vh,150px)}
+.modulo{
+  display:flex;flex-wrap:wrap;gap:clamp(16px,1.8vw,26px);align-items:flex-end;
+  margin-top:3em;padding:clamp(22px,2.4vw,34px);
+  background:var(--carta);border:1px solid var(--carta-scura);
+  box-shadow:0 1px 0 var(--carta-scura);
+}
+.campo-data{display:flex;flex-direction:column;gap:9px}
+.campo-data label{
+  font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--azzurro-cupo);
+}
+.campo-data input,.campo-data select{
+  font-family:"DM Mono",monospace;font-size:14px;padding:11px 12px;
+  background:var(--campo-alto);color:var(--inchiostro);
+  border:0;border-bottom:1.5px solid var(--azzurro);   /* un filetto, non una scatola */
+}
+.campo-data input:focus,.campo-data select:focus{outline:0;border-bottom-color:var(--rosso)}
+.altre-vie{
+  margin-top:2.6em;font-family:"DM Mono",monospace;font-size:12px;
+  letter-spacing:.08em;color:var(--fumo);
+}
+.altre-vie a{color:var(--inchiostro);text-decoration:none;border-bottom:1.5px solid var(--azzurro)}
+.altre-vie a:hover{border-bottom-color:var(--rosso)}
+
+.piede{
+  border-top:1px solid var(--filo);
+  padding:clamp(56px,7vh,96px) 0 clamp(70px,9vh,120px);
+  font-family:"DM Mono",monospace;font-size:12px;color:var(--fumo);
+}
+.piede .colonne{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px}
+.piede h3{
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--azzurro-cupo);font-weight:400;margin:0 0 14px;
+}
+.piede a{color:var(--inchiostro);text-decoration:none;display:block;padding:3px 0}
+.piede a:hover{color:var(--rosso)}
+@media (max-width:760px){.piede .colonne{grid-template-columns:1fr;gap:34px}}
 
 /* --- grana della carta: lega foto e fondi --- */
 .grana{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;mix-blend-mode:multiply;opacity:.45}
@@ -814,7 +868,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
             <text x="50" y="61" text-anchor="middle" font-family="DM Mono,monospace" font-size="11"
                   letter-spacing="1.4" fill="currentColor">ADRIATICO</text>
           </svg>
-          <div class="posto" style="--tinta:var(--foto-caldo);--forma:4/5"
+          <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:4/5"
                role="img" aria-label="Crostate sul banco">
             <span class="tipo">Foto</span>
             <span class="soggetto">Crostate sul banco</span>
@@ -836,7 +890,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
       </figure>
       <figure class="satellite" style="top:168vh;left:3%;rotate:-1.1deg">
         <div class="francobollo">
-          <div class="posto" style="--tinta:var(--foto-caldo);--forma:4/5"
+          <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:4/5"
                role="img" aria-label="Plumcake affettato">
             <span class="tipo">Foto</span>
             <span class="soggetto">Plumcake affettato</span>
@@ -869,7 +923,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
       </figure>
       <figure class="satellite" style="top:309vh;right:3%;rotate:1.2deg">
         <div class="francobollo">
-          <div class="posto" style="--tinta:var(--foto-caldo);--forma:4/5"
+          <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:4/5"
                role="img" aria-label="La sala alle dodici">
             <span class="tipo">Foto</span>
             <span class="soggetto">La sala alle dodici</span>
@@ -920,7 +974,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 <section class="momento" id="famiglia" aria-labelledby="t-famiglia">
   <div class="contenitore duetto">
     <figure class="francobollo" style="rotate:-1.4deg">
-      <div class="posto" style="--tinta:var(--foto-caldo);--forma:4/5"
+      <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:4/5"
                  role="img" aria-label="I proprietari dell'Hotel Maioli dietro il banco della hall">
               <span class="tipo">Foto</span>
               <span class="soggetto">La famiglia</span>
@@ -1029,7 +1083,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
       <figure class="carta-mazzo cartolina">
         <div class="carta">
           <div class="interno">
-            <div class="posto" style="--tinta:var(--foto-caldo);--forma:3/2"
+            <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:3/2"
                  role="img" aria-label="Un borgo dell'entroterra riminese o il monte Titano">
               <span class="tipo">Foto</span>
               <span class="soggetto">Borghi e San Marino</span>
@@ -1071,7 +1125,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
         <span class="letti">1 persona</span>
       </figure>
       <figure class="camera">
-        <div class="posto" style="--tinta:var(--foto-caldo)"
+        <div class="posto chiaro" style="--tinta:var(--foto-caldo)"
              role="img" aria-label="Camera matrimoniale dell'Hotel Maioli">
           <span class="tipo">Foto</span>
           <span class="soggetto">Camera matrimoniale</span>
@@ -1188,6 +1242,19 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 </script>
 
 <script>
+/* --- tendina — PRIMA di tutto il resto -----------------------------------
+   Sta tutto in un solo <script>: se qualcosa più in basso solleva un
+   errore, quello che viene dopo non viene mai eseguito. Il menu del
+   telefono è la cosa che deve funzionare comunque, quindi si lega qui. */
+(() => {
+  const tendina = document.getElementById('tendina');
+  const mostra = v => tendina.classList.toggle('aperta', v);
+  document.getElementById('apri').onclick  = () => mostra(true);
+  document.getElementById('apri2').onclick = () => mostra(true);
+  document.getElementById('chiudi').onclick = () => mostra(false);
+  addEventListener('keydown', e => e.key === 'Escape' && mostra(false));
+})();
+
 /* --- il rosone: otto petali, occhio forato --- */
 (() => {
   const ri = 5.6, ro = 20, larg = 5.4, pancia = 3.4;
@@ -1208,6 +1275,11 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
     if (!fermo) v.play().catch(() => {});       /* se fallisce resta il poster */
   });
 })();
+
+/* Avvolto: se il motore inciampa su un motore di rendering che non
+   conosciamo, la pagina resta leggibile e navigabile invece di
+   spegnersi a metà. L'errore si vede in console, non a schermo. */
+try {
 
 /* ============================================================
    UN SOLO MOTORE
@@ -1387,8 +1459,12 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 
   /* se la soglia viene attraversata, si riparte: allaMano ridipinge o
      lascia il campo al CSS impilato, che vince con !important */
-  stretto.addEventListener('change', allaMano);
-  ridotto.addEventListener('change', allaMano);
+  /* addEventListener su MediaQueryList è arrivato tardi su Safari: senza
+     questa guardia, sui telefoni più vecchi qui saltava tutto lo script */
+  for (const mq of [stretto, ridotto]) {
+    if (mq.addEventListener) mq.addEventListener('change', allaMano);
+    else if (mq.addListener) mq.addListener(allaMano);
+  }
 
   posa();
   misuraColazione(); reale = atteso;
@@ -1396,12 +1472,10 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   requestAnimationFrame(giro);
 })();
 
-/* --- tendina --- */
-const tendina = document.getElementById('tendina');
-const mostra = v => tendina.classList.toggle('aperta', v);
-apri.onclick = apri2.onclick = () => mostra(true);
-chiudi.onclick = () => mostra(false);
-addEventListener('keydown', e => e.key === 'Escape' && mostra(false));
+
+} catch (e) {
+  console.warn('Motore dello scorrimento fermo:', e);
+}
 </script>
 </body>
 </html>
