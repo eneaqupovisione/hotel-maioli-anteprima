@@ -79,7 +79,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .microazione{
   display:inline-block;margin-top:2.6em;font-size:12px;letter-spacing:.16em;
   text-transform:uppercase;text-decoration:none;
-  border-bottom:2px solid var(--verde);padding-bottom:5px;
+  border-bottom:2px solid var(--azzurro);padding-bottom:5px;
 }
 .microazione:hover{border-bottom-color:var(--rosso)}
 
@@ -115,11 +115,17 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
    Sottile per forza: rosso e azzurro sono inchiostri, non vernici, e
    sopra l'1% della superficie il sito torna a sembrare a fasce. --- */
 .cartolina{margin:0}
+/* Le striature: è qui che i colori stanno tutti insieme per mestiere.
+   Rosso e azzurro sono i principali, verde e giallo entrano come
+   dettaglio nello stesso passo — è un bordo posta aerea, non una
+   campitura, quindi la superficie resta sotto l'unghia. */
 .cartolina .carta{
   padding:5px;
   background:repeating-linear-gradient(45deg,
-    var(--rosso)   0 5px,  #fff 5px 10px,
-    var(--azzurro) 10px 15px, #fff 15px 20px);
+    var(--rosso)   0 5px,    var(--campo) 5px 10px,
+    var(--azzurro) 10px 15px, var(--campo) 15px 20px,
+    var(--verde)   20px 25px, var(--campo) 25px 30px,
+    var(--giallo)  30px 35px, var(--campo) 35px 40px);
 }
 /* cartoncino crema, non bianco da stampante: è una cartolina */
 .cartolina .interno{background:var(--carta);padding:7px}
@@ -184,10 +190,10 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
    se no le ultime voci del menu ci finiscono sotto */
 @media (min-width:901px) and (max-width:1099px){.testata .riga{padding-right:214px}}
 .verifica{
-  font-family:"DM Mono",monospace;background:var(--verde);color:#fff;text-decoration:none;white-space:nowrap;
+  font-family:"DM Mono",monospace;background:var(--rosso);color:#fff;text-decoration:none;white-space:nowrap;
   padding:11px 18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
 }
-.verifica:hover{background:#245244}
+.verifica:hover{background:var(--rosso-cupo)}
 .apri{display:none;background:none;border:0;padding:9px;cursor:pointer}
 .apri span{display:block;width:21px;height:1px;background:var(--inchiostro);margin:5px 0}
 
@@ -661,7 +667,16 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   display:flex;flex-wrap:wrap;gap:clamp(16px,1.8vw,26px);align-items:flex-end;
   margin-top:3em;padding:clamp(22px,2.4vw,34px);
   background:var(--carta);border:1px solid var(--carta-scura);
-  box-shadow:0 1px 0 var(--carta-scura);
+  box-shadow:0 1px 0 var(--carta-scura);position:relative;
+}
+/* la stessa striatura in testa al modulo: anche questo è un pezzo di posta */
+.modulo::before{
+  content:'';position:absolute;left:-1px;right:-1px;top:-1px;height:5px;
+  background:repeating-linear-gradient(45deg,
+    var(--rosso)   0 5px,    var(--campo) 5px 10px,
+    var(--azzurro) 10px 15px, var(--campo) 15px 20px,
+    var(--verde)   20px 25px, var(--campo) 25px 30px,
+    var(--giallo)  30px 35px, var(--campo) 35px 40px);
 }
 .campo-data{display:flex;flex-direction:column;gap:9px}
 .campo-data label{
@@ -671,14 +686,14 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .campo-data input,.campo-data select{
   font-family:"DM Mono",monospace;font-size:14px;padding:11px 12px;
   background:var(--campo-alto);color:var(--inchiostro);
-  border:0;border-bottom:2px solid var(--verde);   /* un filetto, non una scatola */
+  border:0;border-bottom:2px solid var(--azzurro);   /* un filetto, non una scatola */
 }
-.campo-data input:focus,.campo-data select:focus{outline:0;border-bottom-color:var(--giallo)}
+.campo-data input:focus,.campo-data select:focus{outline:0;border-bottom-color:var(--rosso)}
 .altre-vie{
   margin-top:2.6em;font-family:"DM Mono",monospace;font-size:12px;
   letter-spacing:.08em;color:var(--fumo);
 }
-.altre-vie a{color:var(--inchiostro);text-decoration:none;border-bottom:2px solid var(--verde)}
+.altre-vie a{color:var(--inchiostro);text-decoration:none;border-bottom:2px solid var(--azzurro)}
 .altre-vie a:hover{border-bottom-color:var(--rosso)}
 
 .piede{
