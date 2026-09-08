@@ -233,16 +233,44 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
     font-variation-settings:"SOFT" 40,"WONK" 1;
     font-size:clamp(18px,1.45vw,23px);
   }
-  .menu a{padding:.30em 0;border-bottom:0;position:relative;white-space:nowrap}
+  .menu a{
+    padding:.34em 0;border-bottom:0;position:relative;white-space:nowrap;
+    transition:transform .42s cubic-bezier(.22,.61,.36,1);
+  }
+  .menu a:hover{transform:translateX(6px)}
   /* il filetto cresce da sinistra, non appare tutto insieme */
   .menu a::after{
-    content:'';position:absolute;left:0;right:0;bottom:.18em;height:1px;
-    background:var(--rosso);transform:scaleX(0);transform-origin:left;
-    transition:transform .32s cubic-bezier(.22,.61,.36,1);
+    content:'';position:absolute;left:0;right:0;bottom:.16em;height:1px;
+    background:#fff;transform:scaleX(0);transform-origin:left;
+    transition:transform .42s cubic-bezier(.22,.61,.36,1);
   }
   .menu a:hover::after{transform:scaleX(1)}
 
   .telefono{margin:auto 0 calc(clamp(30px,3.4vh,48px) + 46px);font-size:12px}
+
+  /* L'entrata: la corsia si scrive da sinistra, una voce dopo l'altra.
+     Una volta sola, al caricamento — non è un effetto, è il modo in cui
+     una colonna di parole si presenta. */
+  @media (prefers-reduced-motion:no-preference){
+    .testata .insegna,.menu a,.telefono,.verifica.principale{
+      animation:entra-corsia .66s cubic-bezier(.22,.61,.36,1) backwards;
+    }
+    .testata .insegna{animation-delay:.06s}
+    .menu a:nth-child(1){animation-delay:.16s}
+    .menu a:nth-child(2){animation-delay:.21s}
+    .menu a:nth-child(3){animation-delay:.26s}
+    .menu a:nth-child(4){animation-delay:.31s}
+    .menu a:nth-child(5){animation-delay:.36s}
+    .menu a:nth-child(6){animation-delay:.41s}
+    .menu a:nth-child(7){animation-delay:.46s}
+    .menu a:nth-child(8){animation-delay:.51s}
+    .telefono{animation-delay:.58s}
+    .verifica.principale{animation-delay:.64s}
+  }
+  @keyframes entra-corsia{
+    from{opacity:0;transform:translateX(-16px)}
+    to{opacity:1;transform:none}
+  }
   .apri{display:none}
 
   /* il contenuto si centra in ciò che resta, non sotto la corsia */
@@ -358,8 +386,11 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .cresta .o1{transform:translateX(calc(var(--o,0) * -50%))}   /* 1,5 schermate */
 .cresta .o2{transform:translate(calc(var(--o,0) * -64%), calc(var(--o,0) * -9px))}
 .cresta .o3{transform:translate(calc(var(--o,0) * -30%), calc(var(--o,0) * 7px))}
-/* sotto i 768px niente scrub, come per la crostata: l'onda resta ferma */
-@media (max-width:768px),(prefers-reduced-motion:reduce){
+/* L'onda si muove anche da telefono. L'invariante «niente scrub sotto i
+   768px» nasce da pinning e ricalcoli, che costano batteria e scattano:
+   qui sono tre transform su altrettanti SVG, tutto sul compositore. Restano
+   spenti gli scrub veri — la scena della colazione e il mazzo. */
+@media (prefers-reduced-motion:reduce){
   .onde{transform:none!important;height:calc(var(--alta) + 40px)}
   .cresta svg{transform:none!important}
 }
@@ -817,7 +848,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 
 <!-- ============ 01 · IL RISVEGLIO ============ -->
 <section class="risveglio" id="risveglio" aria-labelledby="t-risveglio">
-  <video muted loop playsinline preload="none" id="mare"
+  <video autoplay muted loop playsinline preload="none" id="mare"
          poster="video/mare-2.jpg" data-desktop-src="video/mare-2.mp4"
          aria-label="Il mare di Misano Adriatico all'alba, la risacca su uno scoglio"></video>
   <div class="dentro">
@@ -1335,16 +1366,25 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
     Array.from({length:8}, (_,k) => `<path d="${d}" transform="rotate(${k*45})"/>`).join('');
 })();
 
-/* --- i video partono solo da 769px in su e solo se non c'è risparmio dati --- */
+/* --- il video parte anche da telefono -----------------------------------
+   DEVIAZIONE dichiarata da maioli-struttura-funzionale.md §6, che diceva
+   «su mobile il video non si carica». Il motivo vero di quella regola era
+   il primo disegno e il peso, non l'animazione: qui il fermo immagine resta
+   il primo fotogramma, il video si chiede solo DOPO il caricamento — quindi
+   non compete mai con l'LCP — e non si chiede affatto se la connessione
+   dichiara risparmio dati o 2g. */
 (() => {
-  const grande = matchMedia('(min-width:769px)').matches;
-  const parsimonia = navigator.connection && navigator.connection.saveData === true;
-  const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!grande || parsimonia) return;            /* su mobile resta il poster */
-  document.querySelectorAll('video[data-desktop-src]').forEach(v => {
+  const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const c = navigator.connection;
+  const lento = c && (c.saveData === true || /^(slow-)?2g$/.test(c.effectiveType || ''));
+  if (lento) return;                     /* resta il fermo immagine, e va bene così */
+
+  const parti = () => document.querySelectorAll('video[data-desktop-src]').forEach(v => {
     v.src = v.dataset.desktopSrc;
-    if (!fermo) v.play().catch(() => {});       /* se fallisce resta il poster */
+    if (!ridotto) v.play().catch(() => {});   /* se fallisce resta il poster */
   });
+  if (document.readyState === 'complete') parti();
+  else addEventListener('load', parti, {once: true});
 })();
 
 /* Avvolto: se il motore inciampa su un motore di rendering che non
