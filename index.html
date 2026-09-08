@@ -27,6 +27,13 @@
      basta. Finché le fotografie non ci sono, sono loro a farla vedere —
      e quando arriveranno, il colore tornerà da solo nelle proporzioni
      che la palette prescrive, perché una foto è una foto. */
+  /* Verde cabina e Giallo tenda, presi da variante-insegna-palette.md.
+     Ruoli suoi: il verde è l'azione e le righe, il giallo è solo aree
+     piene piccole e non porta MAI testo chiaro — porta testo scuro
+     sopra di sé. */
+  --verde:  #2F6A57;
+  --giallo: #E0A63C;
+
   --foto-caldo:  var(--carta-scura);
   --foto-freddo: var(--azzurro);
   --foto-cupo:   var(--azzurro-cupo);
@@ -72,7 +79,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .microazione{
   display:inline-block;margin-top:2.6em;font-size:12px;letter-spacing:.16em;
   text-transform:uppercase;text-decoration:none;
-  border-bottom:1.5px solid var(--azzurro);padding-bottom:5px;
+  border-bottom:2px solid var(--verde);padding-bottom:5px;
 }
 .microazione:hover{border-bottom-color:var(--rosso)}
 
@@ -177,10 +184,10 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
    se no le ultime voci del menu ci finiscono sotto */
 @media (min-width:901px) and (max-width:1099px){.testata .riga{padding-right:214px}}
 .verifica{
-  font-family:"DM Mono",monospace;background:var(--rosso);color:#fff;text-decoration:none;white-space:nowrap;
+  font-family:"DM Mono",monospace;background:var(--verde);color:#fff;text-decoration:none;white-space:nowrap;
   padding:11px 18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
 }
-.verifica:hover{background:var(--rosso-cupo)}
+.verifica:hover{background:#245244}
 .apri{display:none;background:none;border:0;padding:9px;cursor:pointer}
 .apri span{display:block;width:21px;height:1px;background:var(--inchiostro);margin:5px 0}
 
@@ -278,7 +285,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .momento .intestazione{display:flex;align-items:baseline;gap:18px;margin-bottom:2.6em}
 .momento .ora-blocco{
   font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.18em;
-  color:var(--rosso-cupo);background:var(--carta);padding:5px 10px;
+  color:var(--inchiostro);background:var(--giallo);padding:5px 10px;
 }
 
 .duetto{display:grid;grid-template-columns:1fr .82fr;gap:96px;align-items:center}
@@ -476,9 +483,9 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .buio .display{color:var(--notte-testo)}
 .buio .display em,.buio .testo,.buio ul.tag{color:var(--sera-fumo)}
 .buio ul.tag li+li::before{color:#4b7488}
-/* la linguetta resta di carta con l'inchiostro rosso: scura su chiara,
-   funziona su qualunque fondo. L'override la rendeva crema su crema. */
-.buio .ora-blocco{color:var(--rosso-cupo);background:var(--carta)}
+/* la linguetta gialla con l'inchiostro sopra funziona su qualunque fondo:
+   il giallo non porta mai testo chiaro, porta testo scuro sopra di sé */
+.buio .ora-blocco{color:var(--inchiostro);background:var(--giallo)}
 .buio .microazione{border-bottom-color:var(--azzurro);color:var(--notte-testo)}
 .buio .microazione:hover{border-bottom-color:var(--rosso)}
 /* il francobollo resta di carta chiara anche sul notte: è un oggetto,
@@ -496,7 +503,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .camera .posto{--forma:4/3}
 .camera .riga-dati{
   display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-  margin-top:14px;padding-bottom:12px;border-bottom:1.5px solid var(--azzurro);
+  margin-top:14px;padding-bottom:12px;border-bottom:2px solid var(--verde);
 }
 .camera .nome{
   font-family:Fraunces,Georgia,serif;font-weight:200;font-size:clamp(19px,1.7vw,26px);
@@ -504,8 +511,8 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 }
 .camera .prezzo-da{
   font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--rosso);white-space:nowrap;
-  background:var(--carta);padding:5px 9px;
+  text-transform:uppercase;color:var(--inchiostro);white-space:nowrap;
+  background:var(--giallo);padding:5px 9px;
 }
 .camera .letti{
   display:block;margin-top:10px;font-family:"DM Mono",monospace;font-size:10.5px;
@@ -664,14 +671,14 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .campo-data input,.campo-data select{
   font-family:"DM Mono",monospace;font-size:14px;padding:11px 12px;
   background:var(--campo-alto);color:var(--inchiostro);
-  border:0;border-bottom:1.5px solid var(--azzurro);   /* un filetto, non una scatola */
+  border:0;border-bottom:2px solid var(--verde);   /* un filetto, non una scatola */
 }
-.campo-data input:focus,.campo-data select:focus{outline:0;border-bottom-color:var(--rosso)}
+.campo-data input:focus,.campo-data select:focus{outline:0;border-bottom-color:var(--giallo)}
 .altre-vie{
   margin-top:2.6em;font-family:"DM Mono",monospace;font-size:12px;
   letter-spacing:.08em;color:var(--fumo);
 }
-.altre-vie a{color:var(--inchiostro);text-decoration:none;border-bottom:1.5px solid var(--azzurro)}
+.altre-vie a{color:var(--inchiostro);text-decoration:none;border-bottom:2px solid var(--verde)}
 .altre-vie a:hover{border-bottom-color:var(--rosso)}
 
 .piede{
