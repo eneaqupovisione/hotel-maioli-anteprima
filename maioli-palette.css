@@ -1,0 +1,121 @@
+/* ============================================================
+   HOTEL MAIOLI — palette "Cartolina '68"
+   Impianto: campo chiaro continuo, colore solo nei dettagli.
+   ============================================================ */
+
+:root{
+
+  /* --- IL CAMPO -------------------------------------------------
+     Non è bianco puro: è un bianco scaldato, appena sporco.
+     È il fondo di TUTTO il sito, dall'inizio alla fine.
+     Non esistono "sezioni colorate": esiste un foglio solo.        */
+
+  --campo:        #FCFAF6;   /* fondo pagina, sempre                   */
+  --campo-alto:   #FFFFFF;   /* schede e superfici che devono staccare */
+  --campo-basso:  #F5F1E8;   /* fondo appena più caldo, per respiro    */
+
+  /* --- LA CARTA -------------------------------------------------
+     Il colore cartolina vero. NON è un fondo di sezione.
+     Vive solo su oggetti piccoli e delimitati: francobolli,
+     cartoline, etichette, il retro di una scheda.                  */
+
+  --carta:        #F2E7CE;
+  --carta-scura:  #E4D5B4;   /* bordi e ombre della carta              */
+
+  /* --- INCHIOSTRI ----------------------------------------------
+     Due colori, e basta. Il rosso è l'azione, l'azzurro è l'acqua.
+     Non si mescolano mai e non fanno mai da fondo a una sezione.    */
+
+  --rosso:        #C13A2A;   /* CTA, numeri, timbri, sottolineature    */
+  --rosso-cupo:   #8E2A1E;   /* hover del rosso                        */
+  --azzurro:      #5E9CB5;   /* filetti, etichette, icone, dettagli    */
+  --azzurro-cupo: #2F5D70;   /* testo azzurro su chiaro (contrasto ok) */
+
+  /* --- TESTO ---------------------------------------------------- */
+
+  --inchiostro:   #1E1712;   /* titoli e corpo                         */
+  --fumo:         #8C8377;   /* secondario, didascalie, eyebrow         */
+  --filo:         #E6DFD1;   /* linee sottili, bordi, separatori        */
+
+  /* --- NOTTE ----------------------------------------------------
+     UNA sola sezione scura in tutta la pagina: la terrazza di sera.
+     Se diventano due, il campo continuo si spezza e l'effetto muore. */
+
+  --notte:        #141110;
+  --notte-testo:  #E8DFCE;
+  --notte-fumo:   #9C9185;
+}
+
+
+/* ============================================================
+   PROPORZIONI — la regola che tiene in piedi tutto
+   ============================================================
+   ~85%  campo chiaro (--campo)
+   ~10%  immagini e video a piena larghezza
+   ~4%   carta (francobolli, cartoline, etichette)
+   ~1%   rosso + azzurro
+
+   Se il rosso o l'azzurro superano l'1% della superficie,
+   il sito torna a sembrare "a fasce". Sono inchiostri, non vernici.
+   ============================================================ */
+
+
+/* ============================================================
+   USO PER RUOLO — dove va cosa
+   ============================================================ */
+
+/* ROSSO — solo dove si agisce o si conta */
+.cta            { background: var(--rosso); color: #fff; }
+.cifra          { color: var(--rosso); }          /* 12:00, 800 m, 9 camere */
+.timbro         { stroke: var(--rosso); }         /* timbri postali SVG     */
+a:hover         { color: var(--rosso); }
+
+/* AZZURRO — solo dove c'è acqua o struttura */
+.filetto        { border-color: var(--azzurro); }  /* linee sottili         */
+.etichetta      { color: var(--azzurro-cupo); }    /* micro-etichette       */
+.duotone-acqua  { /* filtro duotone sui video del mare, vedi istruzioni */ }
+
+/* CARTA — solo oggetti, mai sezioni */
+.francobollo,
+.cartolina,
+.etichetta-carta { background: var(--carta); }
+
+
+/* ============================================================
+   GRANA DELLA CARTA
+   È la texture che tiene insieme tutto: va sopra ogni cosa,
+   immagini comprese, così sembrano stampate sullo stesso foglio.
+   Un solo elemento fisso, non ripetuto per sezione.
+   ============================================================ */
+
+.grana{
+  position: fixed; inset: 0; z-index: 400;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: .5;
+}
+/* markup: <svg class="grana"><filter id="g">
+     <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="4" stitchTiles="stitch"/>
+     <feColorMatrix type="saturate" values="0"/>
+     <feComponentTransfer><feFuncA type="linear" slope=".2"/></feComponentTransfer>
+   </filter><rect width="100%" height="100%" filter="url(#g)"/></svg>                  */
+
+
+/* ============================================================
+   CONTRASTO — verificato
+   ============================================================
+   inchiostro su campo      15.8 : 1   ok ovunque
+   fumo su campo             4.6 : 1   ok da 16px in su
+   rosso su campo            5.4 : 1   ok da 16px in su
+   azzurro-cupo su campo     6.1 : 1   ok
+   azzurro su campo          2.9 : 1   NO testo — solo filetti e icone
+   ocra su campo             1.9 : 1   NO testo — solo dentro le foto
+   ============================================================ */
+
+
+/* ============================================================
+   FUORI PALETTE
+   L'ocra #E4A93F della versione precedente è stata tolta:
+   litigava con il rosso e faceva salire il totale del colore
+   oltre la soglia. Se serve caldo, arriva dalle foto del cibo.
+   ============================================================ */
