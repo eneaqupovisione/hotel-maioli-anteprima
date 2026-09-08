@@ -23,12 +23,13 @@
   --passo:14px;              /* passo delle perforazioni */
   /* i posti delle foto: neutri di mezzo tono. Una foto non è mai
      chiara come il campo, se no la proporzione 85/10 non si legge. */
-  /* Erano tre grigi neutri inventati, e siccome sono le superfici colorate
-     più grandi della pagina facevano sembrare tutto grigio-nero. Ora
-     derivano dalla palette: la sabbia dalla carta, l'acqua dall'azzurro. */
-  --foto-caldo:  #CBB894;   /* carta, ma di una foto: sabbia, pane, legno  */
-  --foto-freddo: #7FA0AE;   /* azzurro smorzato: acqua, cielo, lontananza  */
-  --foto-cupo:   #2F5D70;   /* = azzurro cupo: crepuscolo e ombra, non nero */
+  /* I posti delle foto NON hanno più tinte proprie: sono la palette e
+     basta. Finché le fotografie non ci sono, sono loro a farla vedere —
+     e quando arriveranno, il colore tornerà da solo nelle proporzioni
+     che la palette prescrive, perché una foto è una foto. */
+  --foto-caldo:  var(--carta-scura);
+  --foto-freddo: var(--azzurro);
+  --foto-cupo:   var(--azzurro-cupo);
 }
 
 body{
@@ -113,7 +114,8 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
     var(--rosso)   0 5px,  #fff 5px 10px,
     var(--azzurro) 10px 15px, #fff 15px 20px);
 }
-.cartolina .interno{background:var(--campo-alto);padding:7px}
+/* cartoncino crema, non bianco da stampante: è una cartolina */
+.cartolina .interno{background:var(--carta);padding:7px}
 .cartolina figcaption{
   font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--fumo);padding:12px 1px 0;
