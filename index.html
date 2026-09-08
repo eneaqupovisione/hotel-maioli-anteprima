@@ -480,7 +480,21 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .satellite figcaption{font-size:clamp(8.6px,.78vw,10.5px);letter-spacing:.12em;margin-top:10px;gap:10px}
 .satellite .timbro{width:134px;height:134px}
 
-@media (max-width:768px),(prefers-reduced-motion:reduce){
+/* Sul telefono la scena resta una scena: il disco al centro, le voci che
+   si danno il cambio, il contatore. Spariscono solo i francobolli, che al
+   minimo di 218px coprirebbero il testo. */
+@media (max-width:768px){
+  .colazione{height:420vh}
+  .scena{padding:0 22px}
+  .cima{padding-top:76px}
+  .cima .display{font-size:clamp(21px,5.6vw,30px);max-width:none}
+  .torta{width:min(62vw,300px)}
+  .voci{min-height:150px}
+  .voce h3{font-size:clamp(24px,6.4vw,32px)}
+  .satelliti{display:none}
+  .fondo{padding-bottom:96px}
+}
+@media (prefers-reduced-motion:reduce){
   .colazione{height:auto;padding:clamp(92px,13vh,176px) 0}
   .colazione .palco{position:static;height:auto;overflow:visible}
   .scena{display:block;height:auto}
@@ -634,9 +648,17 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .doppia{position:relative;aspect-ratio:4/5;overflow:hidden}
 .doppia > .posto{position:absolute;inset:0;height:100%}
 .doppia .giorno{clip-path:inset(0 calc(var(--g,0) * 100%) 0 0)}
+/* il cursore: corre per tutta l'altezza del riquadro, con una tacca a
+   metà che dice che è una maniglia e non un bordo */
 .doppia .taglio{
-  position:absolute;top:0;bottom:0;width:1px;background:var(--campo);
-  left:calc(100% - var(--g,0) * 100%);opacity:.85;
+  position:absolute;top:0;bottom:0;width:2px;background:var(--campo);
+  left:calc(100% - var(--g,0) * 100%);
+  box-shadow:0 0 0 1px rgba(20,17,16,.16);
+}
+.doppia .taglio::after{
+  content:'';position:absolute;top:50%;left:50%;
+  width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;
+  background:var(--campo);box-shadow:0 0 0 1px rgba(20,17,16,.16);
 }
 .doppia .didascalie{
   position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;
@@ -644,13 +666,12 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   letter-spacing:.24em;text-transform:uppercase;color:#fff;pointer-events:none;
 }
 .doppia .didascalie span{transition:opacity .3s ease}
-@media (max-width:768px),(prefers-reduced-motion:reduce){
-  /* niente taglio pilotato: le due foto si mostrano una sopra l'altra */
-  .doppia{aspect-ratio:auto;display:grid;gap:10px}
-  .doppia > .posto{position:static}
-  .doppia .giorno{clip-path:none}
-  .doppia .taglio{display:none}
-  .doppia .didascalie{position:static;padding:8px 0 0;color:var(--sera-fumo)}
+/* Resta UN riquadro solo a ogni larghezza: due scatti sovrapposti e un
+   cursore che corre per tutta l'altezza. Impilarli sul telefono voleva
+   dire perdere proprio la cosa che il riquadro deve mostrare. */
+@media (prefers-reduced-motion:reduce){
+  .doppia .giorno{clip-path:inset(0 50% 0 0)}   /* mezzo e mezzo, fermo */
+  .doppia .taglio{left:50%}
   .doppia .didascalie span{opacity:1!important}
 }
 
@@ -1450,7 +1471,9 @@ try {
     const l = document.documentElement.clientWidth || innerWidth || 0;
     return l === 0 || l > 768;
   };
-  const scenaFerma = () => ridotto.matches || !largo();
+  /* solo il movimento ridotto ferma la scena: la larghezza no, se no sul
+     telefono la colazione tornerebbe un elenco */
+  const scenaFerma = () => ridotto.matches;
 
   const fette = [...rotore.querySelectorAll('.spicchio')].map((el, i, a) => {
     const g = (90 - (360/a.length) * i - (180/a.length)) * Math.PI / 180;
@@ -1503,8 +1526,11 @@ try {
 
     /* il giorno lascia il posto alla sera mentre la sezione attraversa */
     if (doppia && ultimo) {
+      /* legato alla traversata della sezione, non a una soglia in vh: su
+         schermi bassi il cursore arrivava in fondo a meta strada */
       const ru = ultimo.getBoundingClientRect();
-      const g = morsa((innerHeight * .82 - ru.top) / (innerHeight * .78), 0, 1);
+      const q = morsa((innerHeight - ru.top) / (innerHeight + ru.height), 0, 1);
+      const g = morsa((q - .18) / .5, 0, 1);
       doppia.style.setProperty('--g', g.toFixed(4));
       const dg = doppia.querySelector('.d-giorno'), dn = doppia.querySelector('.d-notte');
       if (dg) dg.style.opacity = String(1 - g);
