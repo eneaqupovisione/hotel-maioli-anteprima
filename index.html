@@ -465,16 +465,25 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 
 /* --- l'ultimo giorno: l'unica sezione scura di tutta la pagina --------
    Se diventano due, il campo chiaro continuo si spezza e l'effetto muore. */
-.buio{background:var(--notte);color:var(--notte-testo);min-height:100vh;display:grid;align-items:center}
+/* Non più #141110, che è quasi nero: la sezione parla delle sette di sera,
+   non delle tre di notte. Fondo azzurro cupo — un crepuscolo, e un colore
+   della palette invece di un buio generico. */
+.buio{
+  --sera-fumo:#B9C7CE;
+  background:var(--azzurro-cupo);color:var(--notte-testo);
+  min-height:100vh;display:grid;align-items:center;
+}
 .buio .display{color:var(--notte-testo)}
-.buio .display em,.buio .testo,.buio ul.tag{color:var(--notte-fumo)}
-.buio ul.tag li+li::before{color:#3a332e}
-.buio .ora-blocco{color:var(--notte-testo)}
-.buio .microazione{border-bottom-color:#3a332e;color:var(--notte-testo)}
+.buio .display em,.buio .testo,.buio ul.tag{color:var(--sera-fumo)}
+.buio ul.tag li+li::before{color:#4b7488}
+/* la linguetta resta di carta con l'inchiostro rosso: scura su chiara,
+   funziona su qualunque fondo. L'override la rendeva crema su crema. */
+.buio .ora-blocco{color:var(--rosso-cupo);background:var(--carta)}
+.buio .microazione{border-bottom-color:var(--azzurro);color:var(--notte-testo)}
 .buio .microazione:hover{border-bottom-color:var(--rosso)}
 /* il francobollo resta di carta chiara anche sul notte: è un oggetto,
    non una superficie, e la dentellatura va rifatta col fondo scuro */
-.buio .francobollo::before{--foro:radial-gradient(circle calc(var(--passo)/2) at calc(var(--passo)/2) calc(var(--passo)/2), var(--notte) 97%, transparent 100%)}
+.buio .francobollo::before{--foro:radial-gradient(circle calc(var(--passo)/2) at calc(var(--passo)/2) calc(var(--passo)/2), var(--azzurro-cupo) 97%, transparent 100%)}
 
 /* --- le camere: un listino, non un souvenir ---------------------------
    Le cartoline dei dintorni sono storte e col bordo posta aerea: sono
@@ -569,6 +578,36 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   /* impilate no: sotto la soglia si leggono tutte, una sotto l'altra */
   .mazzo{position:static;width:auto;aspect-ratio:auto;display:grid;gap:34px}
   .carta-mazzo{position:static;transform:none!important;opacity:1!important;filter:none!important}
+}
+
+/* --- la facciata giorno e notte ---------------------------------------
+   Due scatti identici sovrapposti: quello di giorno sta sopra e viene
+   tagliato dallo scorrimento. Una linea da un pixel sul fronte del taglio
+   rende leggibile il meccanismo — se no sembra una dissolvenza.
+   VINCOLO da girare al fotografo: le due foto vanno scattate nello stesso
+   momento, stesso treppiede, stessa focale, stesso taglio. Se differiscono
+   anche di poco il passaggio diventa un difetto invece di un effetto.  */
+.doppia{position:relative;aspect-ratio:4/5;overflow:hidden}
+.doppia > .posto{position:absolute;inset:0;height:100%}
+.doppia .giorno{clip-path:inset(0 calc(var(--g,0) * 100%) 0 0)}
+.doppia .taglio{
+  position:absolute;top:0;bottom:0;width:1px;background:var(--campo);
+  left:calc(100% - var(--g,0) * 100%);opacity:.85;
+}
+.doppia .didascalie{
+  position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;
+  padding:10px 12px;font-family:"DM Mono",monospace;font-size:9px;
+  letter-spacing:.24em;text-transform:uppercase;color:#fff;pointer-events:none;
+}
+.doppia .didascalie span{transition:opacity .3s ease}
+@media (max-width:768px),(prefers-reduced-motion:reduce){
+  /* niente taglio pilotato: le due foto si mostrano una sopra l'altra */
+  .doppia{aspect-ratio:auto;display:grid;gap:10px}
+  .doppia > .posto{position:static}
+  .doppia .giorno{clip-path:none}
+  .doppia .taglio{display:none}
+  .doppia .didascalie{position:static;padding:8px 0 0;color:var(--sera-fumo)}
+  .doppia .didascalie span{opacity:1!important}
 }
 
 /* --- le tre distanze in cifre grandi --- */
@@ -946,7 +985,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
     <div>
       <div class="intestazione">
         <span class="ora-blocco">fino alle 19:00</span>
-        <span class="conta" style="color:var(--notte-fumo)">03 / 07</span>
+        <span class="conta" style="color:var(--sera-fumo)">03 / 07</span>
       </div>
       <h2 id="t-ultimo" class="sr-solo">Camera disponibile fino alle 19:00 il giorno della partenza</h2>
       <p class="display" aria-hidden="true">Il giorno che parti <em>non te lo prendiamo</em></p>
@@ -959,12 +998,20 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
       <a class="microazione" href="/prezzi">Prezzi e condizioni</a>
     </div>
     <figure class="francobollo" style="rotate:1.1deg">
-      <div class="posto" style="--tinta:var(--foto-cupo);--forma:4/5"
-                 role="img" aria-label="La facciata dell'hotel al crepuscolo, con la luce calda alle finestre">
-              <span class="tipo">Foto</span>
-              <span class="soggetto">La facciata al crepuscolo</span>
-              <span class="nota">4:5 · luce calda alle finestre</span>
-            </div>
+<div class="doppia">
+        <div class="posto notte" style="--tinta:var(--azzurro-cupo)"
+             role="img" aria-label="La facciata dell'hotel di notte, con la luce calda alle finestre">
+          <span class="tipo">Foto</span><span class="soggetto">La facciata di notte</span>
+          <span class="nota">stesso treppiede della diurna</span>
+        </div>
+        <div class="posto chiaro giorno" style="--tinta:var(--carta-scura)"
+             role="img" aria-label="La stessa facciata di giorno">
+          <span class="tipo">Foto</span><span class="soggetto">La facciata di giorno</span>
+          <span class="nota">4:5 · stessa focale, stesso taglio</span>
+        </div>
+        <span class="taglio"></span>
+        <span class="didascalie"><span class="d-giorno">Le dieci</span><span class="d-notte">Le sette di sera</span></span>
+      </div>
       <figcaption><span>L'ultimo giorno</span><span class="valore">fino alle 19</span></figcaption>
     </figure>
   </div>
@@ -1306,6 +1353,10 @@ try {
   const risveglio = document.getElementById('risveglio');
   const onde = document.querySelector('.onde');
 
+  /* ---------- la facciata giorno/notte ---------- */
+  const doppia = document.querySelector('.doppia');
+  const ultimo = document.getElementById('ultimo-giorno');
+
   /* ---------- il mazzo di cartoline ---------- */
   const dove  = document.getElementById('dove-sei');
   const carte = [...document.querySelectorAll('.carta-mazzo')];
@@ -1387,6 +1438,16 @@ try {
     testata.classList.toggle('posata', rh.bottom <= 76);
 
     /* la corsia laterale sopra l'unica sezione scura */
+
+    /* il giorno lascia il posto alla sera mentre la sezione attraversa */
+    if (doppia && ultimo) {
+      const ru = ultimo.getBoundingClientRect();
+      const g = morsa((innerHeight * .82 - ru.top) / (innerHeight * .78), 0, 1);
+      doppia.style.setProperty('--g', g.toFixed(4));
+      const dg = doppia.querySelector('.d-giorno'), dn = doppia.querySelector('.d-notte');
+      if (dg) dg.style.opacity = String(1 - g);
+      if (dn) dn.style.opacity = String(g);
+    }
 
     /* le cartoline si sfogliano mentre la sezione attraversa lo schermo */
     if (dove && carte.length) {
