@@ -50,7 +50,10 @@
 body{
   margin:0;color:var(--inchiostro);
   background-color:var(--campo);background-image:var(--grana);
-  background-blend-mode:multiply;
+  /* la grana sta ferma: nelle sezioni agganciate il contenuto si blocca
+     e una trama che scorre dietro tradisce subito il trucco. Ferma, la
+     carta resta carta anche quando la pagina si ferma.               */
+  background-blend-mode:multiply;background-attachment:fixed;
   /* corpo in Fraunces: DM Mono a 14-15px è troppo piccolo per i paragrafi */
   font-family:Fraunces,Georgia,serif;font-optical-sizing:auto;font-weight:300;
   font-size:17px;line-height:1.66;-webkit-font-smoothing:antialiased;
@@ -554,20 +557,33 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    lato si sfogliano, e la terza tagliata dal bordo dice da sola che ce
    n'è dell'altra. Sconfina di 40px per lato, quanto il contenitore, se
    no la fila sembrerebbe finire dove finisce il testo.               */
+#camere{padding:0;height:280vh}
+#camere > .contenitore{
+  position:sticky;top:0;height:100vh;
+  display:grid;align-content:center;gap:clamp(12px,1.8vh,24px);
+}
+/* la pista taglia, il listino si sposta: la barra non c'è, il movimento
+   lo comanda lo scorrimento verticale. Sconfina di 40px per lato, quanto
+   il contenitore, se no la fila sembrerebbe finire col paragrafo.     */
+.camere-pista{overflow:hidden;margin:3.2em -40px 0}
 .camere-listino{
-  display:flex;gap:clamp(22px,2.6vw,40px);margin-top:3.2em;
-  overflow-x:auto;overscroll-behavior-x:contain;
-  scroll-snap-type:x proximity;scroll-padding-left:40px;
-  margin-left:-40px;margin-right:-40px;padding:0 40px 18px;
-  scrollbar-width:thin;scrollbar-color:var(--rosso) var(--carta-scura);
+  display:flex;gap:clamp(22px,2.6vw,40px);padding:0 40px;
+  will-change:transform;
 }
-.camere-listino::-webkit-scrollbar{height:6px}
-.camere-listino::-webkit-scrollbar-track{background:var(--carta-scura)}
-.camere-listino::-webkit-scrollbar-thumb{background:var(--rosso)}
-@media (max-width:760px){
-  .camere-listino{margin-left:-22px;margin-right:-22px;padding:0 22px 18px;scroll-padding-left:22px}
+@media (max-width:900px),(prefers-reduced-motion:reduce){
+  /* niente aggancio: torna una fila che si trascina col dito */
+  #camere{padding:clamp(92px,13vh,176px) 0;height:auto}
+  #camere > .contenitore{position:static;height:auto;display:block}
+  .camere-pista{overflow:visible;margin:0}
+  .camere-listino{
+    margin:3.2em -22px 0;padding:0 22px 18px;transform:none!important;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x proximity;scroll-padding-left:22px;
+    scrollbar-width:thin;scrollbar-color:var(--rosso) var(--carta-scura);
+  }
+  .camera{scroll-snap-align:start}
 }
-.camera{margin:0;flex:0 0 min(74vw,420px);scroll-snap-align:start}
+.camera{margin:0;flex:0 0 clamp(240px,25vw,340px)}
 .camera .posto{--forma:4/3}
 .camera .riga-dati{
   display:flex;align-items:baseline;justify-content:space-between;gap:14px;
@@ -675,14 +691,29 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .luogo .bussola{margin-top:0;gap:clamp(20px,2.4vw,38px)}
 .luogo .retro{width:min(30vh,300px)}
 /* il mazzo si misura in altezza, se no a schermo basso esce dal palco */
-.luogo .mazzo{margin:0;width:auto;height:min(46vh,420px);justify-self:center}
+/* il mazzo entra: piccolo e basso, poi viene portato avanti. È la mossa
+   che dice «adesso guarda queste». Il valore di riposo è 1 — se il motore
+   non gira, resta in primo piano invece che rimpicciolito.            */
+.luogo .mazzo{
+  margin:0;width:auto;height:min(46vh,420px);justify-self:center;
+  transform:scale(calc(.76 + .24 * var(--avanti,1)))
+            translateY(calc((1 - var(--avanti,1)) * 6vh));
+  will-change:transform;
+}
+/* e i numeri fanno un passo indietro, se no il primo piano non è tale */
+.luogo .bussola{
+  opacity:calc(1 - .42 * var(--avanti,1));
+  transform:translateX(calc(var(--avanti,1) * -12px));
+  transition:none;
+}
 
 @media (max-width:900px),(prefers-reduced-motion:reduce){
   /* niente perno: la sezione torna un blocco che si legge scorrendo */
   #dove-sei{padding:clamp(92px,13vh,176px) 0;height:auto}
   #dove-sei > .contenitore{position:static;height:auto;display:block}
   .luogo{display:block}
-  .luogo .mazzo{height:auto;width:auto;margin-top:clamp(40px,6vh,72px)}
+  .luogo .mazzo{height:auto;width:auto;margin-top:clamp(40px,6vh,72px);transform:none}
+  .luogo .bussola{opacity:1;transform:none}
   .luogo .retro{width:min(78vw,340px)}
 }
 
@@ -1276,49 +1307,77 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
       <span class="ora-blocco">da 40 €</span>
       <span class="conta">06 / 07</span>
     </div>
-    <h2 id="t-camere" class="sr-solo">Camere singole, matrimoniali, triple e quadruple da 40 € a persona</h2>
-    <p class="display" aria-hidden="true">Tre modi di dormirci <em>e nessuno costa una fortuna</em></p>
+    <h2 id="t-camere" class="sr-solo">Camere singole, matrimoniali, triple, quadruple e deluxe da 40 € a persona</h2>
+    <p class="display" aria-hidden="true">Cinque modi di dormirci <em>e nessuno costa una fortuna</em></p>
 
-    <div class="camere-listino">
-      <figure class="camera">
-        <div class="posto" style="--tinta:var(--foto-freddo)"
-             role="img" aria-label="Camera singola dell'Hotel Maioli">
-          <span class="tipo">Foto</span>
-          <span class="soggetto">Camera singola</span>
-          <span class="nota">4:3 · stessa angolazione per tutte</span>
-        </div>
-        <div class="riga-dati">
-          <span class="nome">La singola</span>
-          <span class="prezzo-da">da 40 €</span>
-        </div>
-        <span class="letti">1 persona</span>
-      </figure>
-      <figure class="camera">
-        <div class="posto chiaro" style="--tinta:var(--foto-caldo)"
-             role="img" aria-label="Camera matrimoniale dell'Hotel Maioli">
-          <span class="tipo">Foto</span>
-          <span class="soggetto">Camera matrimoniale</span>
-          <span class="nota">4:3 · stessa luce, stessa biancheria</span>
-        </div>
-        <div class="riga-dati">
-          <span class="nome">La matrimoniale</span>
-          <span class="prezzo-da">da 40 €</span>
-        </div>
-        <span class="letti">2 persone</span>
-      </figure>
-      <figure class="camera">
-        <div class="posto" style="--tinta:var(--foto-freddo)"
-             role="img" aria-label="Camera tripla o quadrupla dell'Hotel Maioli">
-          <span class="tipo">Foto</span>
-          <span class="soggetto">Camera tripla o quadrupla</span>
-          <span class="nota">4:3 · terzo letto −20%</span>
-        </div>
-        <div class="riga-dati">
-          <span class="nome">Tripla e quadrupla</span>
-          <span class="prezzo-da">da 40 €</span>
-        </div>
-        <span class="letti">3–4 persone</span>
-      </figure>
+    <div class="camere-pista">
+      <div class="camere-listino">
+        <figure class="camera">
+          <div class="posto" style="--tinta:var(--foto-freddo)"
+               role="img" aria-label="Camera singola dell'Hotel Maioli">
+            <span class="tipo">Foto</span>
+            <span class="soggetto">Camera singola</span>
+            <span class="nota">4:3 · stessa angolazione per tutte</span>
+          </div>
+          <div class="riga-dati">
+            <span class="nome">La singola</span>
+            <span class="prezzo-da">da 40 €</span>
+          </div>
+          <span class="letti">1 persona</span>
+        </figure>
+        <figure class="camera">
+          <div class="posto chiaro" style="--tinta:var(--foto-caldo)"
+               role="img" aria-label="Camera doppia matrimoniale dell'Hotel Maioli">
+            <span class="tipo">Foto</span>
+            <span class="soggetto">Camera doppia matrimoniale</span>
+            <span class="nota">4:3 · stessa luce, stessa biancheria</span>
+          </div>
+          <div class="riga-dati">
+            <span class="nome">La matrimoniale</span>
+            <span class="prezzo-da">da 40 €</span>
+          </div>
+          <span class="letti">2 persone</span>
+        </figure>
+        <figure class="camera">
+          <div class="posto" style="--tinta:var(--foto-cupo)"
+               role="img" aria-label="Camera tripla dell'Hotel Maioli">
+            <span class="tipo">Foto</span>
+            <span class="soggetto">Camera tripla</span>
+            <span class="nota">4:3 · terzo letto −20%</span>
+          </div>
+          <div class="riga-dati">
+            <span class="nome">La tripla</span>
+            <span class="prezzo-da">da 40 €</span>
+          </div>
+          <span class="letti">3 persone</span>
+        </figure>
+        <figure class="camera">
+          <div class="posto" style="--tinta:var(--foto-freddo)"
+               role="img" aria-label="Camera quadrupla dell'Hotel Maioli">
+            <span class="tipo">Foto</span>
+            <span class="soggetto">Camera quadrupla</span>
+            <span class="nota">4:3 · due matrimoniali o letto a castello</span>
+          </div>
+          <div class="riga-dati">
+            <span class="nome">La quadrupla</span>
+            <span class="prezzo-da">da 40 €</span>
+          </div>
+          <span class="letti">4 persone</span>
+        </figure>
+        <figure class="camera">
+          <div class="posto chiaro" style="--tinta:var(--foto-caldo)"
+               role="img" aria-label="Camera deluxe dell'Hotel Maioli">
+            <span class="tipo">Foto</span>
+            <span class="soggetto">Camera deluxe</span>
+            <span class="nota">4:3 · la più grande, vista aperta</span>
+          </div>
+          <div class="riga-dati">
+            <span class="nome">La deluxe</span>
+            <span class="prezzo-da">da 40 €</span>
+          </div>
+          <span class="letti">2–3 persone</span>
+        </figure>
+      </div>
     </div>
     <a class="microazione" href="/camere">Tutte le camere</a>
   </div>
@@ -1482,8 +1541,12 @@ try {
   const ultimo = document.getElementById('ultimo-giorno');
 
   /* ---------- il mazzo di cartoline ---------- */
+  const camere = document.getElementById('camere');
+  const pistaCamere = document.querySelector('.camere-pista');
+  const listino = document.querySelector('.camere-listino');
   const dove  = document.getElementById('dove-sei');
   const carte = [...document.querySelectorAll('.carta-mazzo')];
+  const PRESA = .24;                /* quanto dura il portarle avanti */
   const VIA = [.16, .46, 9];        /* quando ogni carta si stacca; l'ultima resta */
   const DURATA = .30;
 
@@ -1587,6 +1650,18 @@ try {
       if (dn) dn.style.opacity = String(g);
     }
 
+    /* le camere si spostano di lato mentre la sezione sta ferma */
+    if (camere && pistaCamere && listino) {
+      const corsaY = camere.offsetHeight - innerHeight;
+      const corsaX = listino.scrollWidth - pistaCamere.clientWidth;
+      if (corsaY > 0 && corsaX > 0) {
+        const q = morsa((scrollY - camere.offsetTop) / corsaY, 0, 1);
+        listino.style.transform = `translateX(${(-q * corsaX).toFixed(1)}px)`;
+      } else {
+        listino.style.transform = '';
+      }
+    }
+
     /* le cartoline si sfogliano mentre la sezione attraversa lo schermo */
     if (dove && carte.length) {
       /* agganciata: il progresso è quanto si è scorso DENTRO il perno,
@@ -1594,7 +1669,11 @@ try {
       const corsaDove = dove.offsetHeight - innerHeight;
       const q = corsaDove <= 0 ? 0
               : morsa((scrollY - dove.offsetTop) / corsaDove, 0, 1);
-      const uscita = carte.map((_, i) => morsa((q - VIA[i]) / DURATA, 0, 1));
+      /* due tempi: prima le prende e le porta avanti, poi le sfoglia */
+      const avanti = morsa(q / PRESA, 0, 1);
+      dove.style.setProperty('--avanti', dolce(avanti).toFixed(4));
+      const qs = morsa((q - PRESA) / (1 - PRESA), 0, 1);
+      const uscita = carte.map((_, i) => morsa((qs - VIA[i]) / DURATA, 0, 1));
       carte.forEach((c, i) => {
         /* quante carte sopra se ne sono andate: le altre avanzano di conseguenza */
         const avanti = uscita.slice(0, i).reduce((a, b) => a + b, 0);
