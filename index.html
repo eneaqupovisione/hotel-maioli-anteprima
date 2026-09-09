@@ -248,28 +248,41 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 
   .telefono{margin:auto 0 calc(clamp(30px,3.4vh,48px) + 46px);font-size:12px}
 
-  /* L'entrata: la corsia si scrive da sinistra, una voce dopo l'altra.
-     Una volta sola, al caricamento — non è un effetto, è il modo in cui
-     una colonna di parole si presenta. */
-  @media (prefers-reduced-motion:no-preference){
-    .testata .insegna,.menu a,.telefono,.verifica.principale{
-      animation:entra-corsia .66s cubic-bezier(.22,.61,.36,1) backwards;
-    }
-    .testata .insegna{animation-delay:.06s}
-    .menu a:nth-child(1){animation-delay:.16s}
-    .menu a:nth-child(2){animation-delay:.21s}
-    .menu a:nth-child(3){animation-delay:.26s}
-    .menu a:nth-child(4){animation-delay:.31s}
-    .menu a:nth-child(5){animation-delay:.36s}
-    .menu a:nth-child(6){animation-delay:.41s}
-    .menu a:nth-child(7){animation-delay:.46s}
-    .menu a:nth-child(8){animation-delay:.51s}
-    .telefono{animation-delay:.58s}
-    .verifica.principale{animation-delay:.64s}
+  /* L'ENTRATA È ALLO SCORRIMENTO, non al caricamento.
+     A pagina ferma in cima il mare resta pulito: si vede solo il marchio.
+     Al primo accenno di scorrimento la corsia si scrive da sinistra, una
+     voce dopo l'altra. Sono transizioni e non un'animazione, così il
+     movimento è reversibile: tornando in cima si ritira.
+     E si ritira più in fretta di come entra — uscire di scena non è un
+     gesto da fare con la stessa cura con cui si entra. */
+  .menu a,.testata .telefono,.verifica.principale{
+    opacity:0;transform:translateX(-18px);
+    transition:opacity .34s cubic-bezier(.4,0,1,1),
+               transform .34s cubic-bezier(.4,0,1,1);
   }
-  @keyframes entra-corsia{
-    from{opacity:0;transform:translateX(-16px)}
-    to{opacity:1;transform:none}
+  .testata.mostra .menu a,
+  .testata.mostra .telefono,
+  .testata.mostra ~ .verifica.principale{
+    opacity:1;transform:none;
+    transition:opacity .62s cubic-bezier(.16,1,.3,1),
+               transform .62s cubic-bezier(.16,1,.3,1);
+  }
+  .testata.mostra .menu a:nth-child(1){transition-delay:.04s}
+  .testata.mostra .menu a:nth-child(2){transition-delay:.09s}
+  .testata.mostra .menu a:nth-child(3){transition-delay:.14s}
+  .testata.mostra .menu a:nth-child(4){transition-delay:.19s}
+  .testata.mostra .menu a:nth-child(5){transition-delay:.24s}
+  .testata.mostra .menu a:nth-child(6){transition-delay:.29s}
+  .testata.mostra .menu a:nth-child(7){transition-delay:.34s}
+  .testata.mostra .menu a:nth-child(8){transition-delay:.39s}
+  .testata.mostra .telefono{transition-delay:.44s}
+  .testata.mostra ~ .verifica.principale{transition-delay:.49s}
+
+  @media (prefers-reduced-motion:reduce){
+    /* niente scrittura progressiva: compaiono e basta */
+    .menu a,.telefono,.verifica.principale{transition:opacity .2s linear;transform:none}
+    .testata.mostra .menu a,.testata.mostra .telefono,
+    .testata.mostra ~ .verifica.principale{transition-delay:0s;transform:none}
   }
   .apri{display:none}
 
@@ -284,7 +297,11 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   .testata{mix-blend-mode:difference;color:#fff}
   .testata .insegna,.testata .menu a{color:#fff}
   .testata .insegna .sotto-nome{color:#fff;opacity:.5}
-  .testata .telefono{color:#fff;opacity:.6}
+  /* nascosto e mostrato con la stessa specificità della regola del colore,
+     se no .testata .telefono{opacity:.6} vince e il telefono non si
+     nasconde mai */
+  .testata .telefono{color:#fff;opacity:0}
+  .testata.mostra .telefono{opacity:.6}
   .testata .menu a::after{background:#fff}
   .verifica.principale{
     /* top e right vanno azzerati: la regola base li fissa a 0 e con anche
@@ -344,55 +361,6 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   letter-spacing:.18em;text-transform:uppercase;color:var(--fumo)}
 .risveglio .identita b{color:var(--inchiostro);font-weight:500}
 
-/* --- lo stacco fra il mare e il foglio -----------------------------------
-   L'onda è la testa della sezione dopo e sborda all'insù sopra il video,
-   così non c'è nessuna giunzione da coprire.
-   Scorrendo SALE più in fretta della pagina: il foglio monta e si mangia
-   l'hero. Il movimento comincia al primo pixel di scorrimento, quando
-   l'onda è ancora in campo — prima lo sfasamento avveniva quando l'onda
-   era già uscita di scena, e infatti non si vedeva.
-   Tre strati dello stesso identico colore: quello che ondeggia è il
-   profilo della loro unione, non una seconda tinta.                   */
-.onde{
-  --alta:clamp(98px,13vw,205px);
-  --sale:42vh;
-  position:absolute;left:0;right:0;z-index:2;pointer-events:none;
-  top:calc(var(--alta) * -1);height:calc(var(--alta) + 60vh);
-  transform:translateY(calc(var(--o,0) * var(--sale) * -1));
-  will-change:transform;
-}
-.cresta{position:absolute;left:0;right:0;top:0;height:var(--alta);overflow:hidden}
-/* sotto la cresta, campo pieno: alzandosi non deve mai aprire un varco */
-.onde::after{
-  content:'';position:absolute;left:0;right:0;top:calc(var(--alta) - 1px);bottom:0;
-  background:var(--campo);
-}
-.cresta svg{
-  position:absolute;left:0;top:0;width:300%;height:100%;display:block;
-  will-change:transform;
-}
-/* il riempimento si dichiara QUI, non con fill="var(--campo)" nell'attributo:
-   var() dentro un attributo di presentazione SVG non è supportato ovunque
-   (Safari lo ignora e il path esce nero). */
-.cresta path{fill:var(--campo)}
-/* le due creste alte non sono campiture ma fili: tre campiture sovrapposte
-   danno come profilo il loro inviluppo superiore, che appiattisce i cavi e
-   fa perdere la sinusoide. Così il profilo resta uno solo e pulito, e la
-   profondità la danno due creste che passano sopra il mare a velocità
-   diverse. non-scaling-stroke perché il viewBox è stirato in orizzontale. */
-.cresta path.filo{fill:none;stroke:var(--azzurro-cupo)}
-.cresta .o2 path{stroke-width:2.2;opacity:.30}
-.cresta .o3 path{stroke-width:1.6;opacity:.18}
-.cresta .o1{transform:translateX(calc(var(--o,0) * -50%))}   /* 1,5 schermate */
-.cresta .o2{transform:translate(calc(var(--o,0) * -64%), calc(var(--o,0) * -9px))}
-.cresta .o3{transform:translate(calc(var(--o,0) * -30%), calc(var(--o,0) * 7px))}
-/* L'onda si muove anche da telefono. L'invariante «niente scrub sotto i
-   768px» nasce da pinning e ricalcoli, che costano batteria e scattano:
-   qui sono tre transform su altrettanti SVG, tutto sul compositore. Restano
-   spenti gli scrub veri — la scena della colazione e il mazzo. */
-@media (prefers-reduced-motion:reduce){
-  .onde{transform:none!important;height:calc(var(--alta) + 40px)}
-  .cresta svg{transform:none!important}
 }
 
 /* ============================================================
@@ -403,9 +371,6 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
    Sotto i 768px e con prefers-reduced-motion tutto si impila.
    ============================================================ */
 .colazione{padding:0;height:520vh}
-/* z-index 3: l'onda (z 2) scende per 60vh dentro la sezione per non aprire
-   varchi mentre sale, e senza questo la sua campitura piena coprirebbe
-   titolo e crostata. Il palco non ha fondo, quindi l'onda si vede lo stesso. */
 .colazione .palco{position:sticky;top:0;height:100vh;overflow:hidden;z-index:3}
 .scena{
   position:relative;height:100%;max-width:1240px;margin:0 auto;padding:0 40px;
@@ -893,18 +858,6 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
      del buffet. Leggi la voce, la sua fetta se ne va. A fine sezione
      la crostata è finita.                                          -->
 <section class="momento colazione" id="colazione" aria-labelledby="t-colazione">
-  <div class="onde" aria-hidden="true">
-    <div class="cresta">
-    <svg class="o3" viewBox="0 0 4320 200" preserveAspectRatio="none">
-      <path class="filo" vector-effect="non-scaling-stroke" d="M0,20.53C21.8,19.69 43.6,19.07 65.5,18.77C87.3,18.48 109.1,18.53 130.9,19.01C152.7,19.50 174.5,20.43 196.4,21.88C218.2,23.33 240.0,25.29 261.8,27.76C283.6,30.23 305.5,33.20 327.3,36.57C349.1,39.93 370.9,43.68 392.7,47.60C414.5,51.53 436.4,55.64 458.2,59.65C480.0,63.66 501.8,67.58 523.6,71.13C545.5,74.68 567.3,77.86 589.1,80.45C610.9,83.04 632.7,85.04 654.5,86.34C676.4,87.63 698.2,88.22 720.0,88.10C741.8,87.98 763.6,87.16 785.5,85.76C807.3,84.35 829.1,82.36 850.9,79.98C872.7,77.60 894.5,74.83 916.4,71.89C938.2,68.96 960.0,65.85 981.8,62.77C1003.6,59.69 1025.5,56.63 1047.3,53.73C1069.1,50.83 1090.9,48.08 1112.7,45.54C1134.5,42.99 1156.4,40.66 1178.2,38.51C1200.0,36.37 1221.8,34.43 1243.6,32.64C1265.5,30.85 1287.3,29.22 1309.1,27.73C1330.9,26.23 1352.7,24.87 1374.5,23.65C1396.4,22.44 1418.2,21.37 1440.0,20.53C1461.8,19.69 1483.6,19.07 1505.5,18.77C1527.3,18.48 1549.1,18.53 1570.9,19.01C1592.7,19.50 1614.5,20.43 1636.4,21.88C1658.2,23.33 1680.0,25.29 1701.8,27.76C1723.6,30.23 1745.5,33.20 1767.3,36.57C1789.1,39.93 1810.9,43.68 1832.7,47.60C1854.5,51.53 1876.4,55.64 1898.2,59.65C1920.0,63.66 1941.8,67.58 1963.6,71.13C1985.5,74.68 2007.3,77.86 2029.1,80.45C2050.9,83.04 2072.7,85.04 2094.5,86.34C2116.4,87.63 2138.2,88.22 2160.0,88.10C2181.8,87.98 2203.6,87.16 2225.5,85.76C2247.3,84.35 2269.1,82.36 2290.9,79.98C2312.7,77.60 2334.5,74.83 2356.4,71.89C2378.2,68.96 2400.0,65.85 2421.8,62.77C2443.6,59.69 2465.5,56.63 2487.3,53.73C2509.1,50.83 2530.9,48.08 2552.7,45.54C2574.5,42.99 2596.4,40.66 2618.2,38.51C2640.0,36.37 2661.8,34.43 2683.6,32.64C2705.5,30.85 2727.3,29.22 2749.1,27.73C2770.9,26.23 2792.7,24.87 2814.5,23.65C2836.4,22.44 2858.2,21.37 2880.0,20.53C2901.8,19.69 2923.6,19.07 2945.5,18.77C2967.3,18.48 2989.1,18.53 3010.9,19.01C3032.7,19.50 3054.5,20.43 3076.4,21.88C3098.2,23.33 3120.0,25.29 3141.8,27.76C3163.6,30.23 3185.5,33.20 3207.3,36.57C3229.1,39.93 3250.9,43.68 3272.7,47.60C3294.5,51.53 3316.4,55.64 3338.2,59.65C3360.0,63.66 3381.8,67.58 3403.6,71.13C3425.5,74.68 3447.3,77.86 3469.1,80.45C3490.9,83.04 3512.7,85.04 3534.5,86.34C3556.4,87.63 3578.2,88.22 3600.0,88.10C3621.8,87.98 3643.6,87.16 3665.5,85.76C3687.3,84.35 3709.1,82.36 3730.9,79.98C3752.7,77.60 3774.5,74.83 3796.4,71.89C3818.2,68.96 3840.0,65.85 3861.8,62.77C3883.6,59.69 3905.5,56.63 3927.3,53.73C3949.1,50.83 3970.9,48.08 3992.7,45.54C4014.5,42.99 4036.4,40.66 4058.2,38.51C4080.0,36.37 4101.8,34.43 4123.6,32.64C4145.5,30.85 4167.3,29.22 4189.1,27.73C4210.9,26.23 4232.7,24.87 4254.5,23.65C4276.4,22.44 4298.2,21.37 4320.0,20.53"/>
-    </svg>
-    <svg class="o2" viewBox="0 0 4320 200" preserveAspectRatio="none">
-      <path class="filo" vector-effect="non-scaling-stroke" d="M0,113.32C21.8,111.33 43.6,108.59 65.5,105.14C87.3,101.68 109.1,97.51 130.9,92.81C152.7,88.11 174.5,82.87 196.4,77.41C218.2,71.96 240.0,66.28 261.8,60.77C283.6,55.25 305.5,49.91 327.3,45.10C349.1,40.29 370.9,36.03 392.7,32.59C414.5,29.15 436.4,26.54 458.2,24.90C480.0,23.25 501.8,22.58 523.6,22.83C545.5,23.09 567.3,24.28 589.1,26.22C610.9,28.17 632.7,30.86 654.5,34.04C676.4,37.22 698.2,40.87 720.0,44.72C741.8,48.57 763.6,52.60 785.5,56.58C807.3,60.57 829.1,64.50 850.9,68.24C872.7,71.97 894.5,75.51 916.4,78.81C938.2,82.11 960.0,85.17 981.8,88.03C1003.6,90.88 1025.5,93.52 1047.3,96.01C1069.1,98.50 1090.9,100.83 1112.7,103.03C1134.5,105.22 1156.4,107.28 1178.2,109.15C1200.0,111.03 1221.8,112.71 1243.6,114.08C1265.5,115.46 1287.3,116.51 1309.1,117.08C1330.9,117.64 1352.7,117.72 1374.5,117.14C1396.4,116.55 1418.2,115.31 1440.0,113.32C1461.8,111.33 1483.6,108.59 1505.5,105.14C1527.3,101.68 1549.1,97.51 1570.9,92.81C1592.7,88.11 1614.5,82.87 1636.4,77.41C1658.2,71.96 1680.0,66.28 1701.8,60.77C1723.6,55.25 1745.5,49.91 1767.3,45.10C1789.1,40.29 1810.9,36.03 1832.7,32.59C1854.5,29.15 1876.4,26.54 1898.2,24.90C1920.0,23.25 1941.8,22.58 1963.6,22.83C1985.5,23.09 2007.3,24.28 2029.1,26.22C2050.9,28.17 2072.7,30.86 2094.5,34.04C2116.4,37.22 2138.2,40.87 2160.0,44.72C2181.8,48.57 2203.6,52.60 2225.5,56.58C2247.3,60.57 2269.1,64.50 2290.9,68.24C2312.7,71.97 2334.5,75.51 2356.4,78.81C2378.2,82.11 2400.0,85.17 2421.8,88.03C2443.6,90.88 2465.5,93.52 2487.3,96.01C2509.1,98.50 2530.9,100.83 2552.7,103.03C2574.5,105.22 2596.4,107.28 2618.2,109.15C2640.0,111.03 2661.8,112.71 2683.6,114.08C2705.5,115.46 2727.3,116.51 2749.1,117.08C2770.9,117.64 2792.7,117.72 2814.5,117.14C2836.4,116.55 2858.2,115.31 2880.0,113.32C2901.8,111.33 2923.6,108.59 2945.5,105.14C2967.3,101.68 2989.1,97.51 3010.9,92.81C3032.7,88.11 3054.5,82.87 3076.4,77.41C3098.2,71.96 3120.0,66.28 3141.8,60.77C3163.6,55.25 3185.5,49.91 3207.3,45.10C3229.1,40.29 3250.9,36.03 3272.7,32.59C3294.5,29.15 3316.4,26.54 3338.2,24.90C3360.0,23.25 3381.8,22.58 3403.6,22.83C3425.5,23.09 3447.3,24.28 3469.1,26.22C3490.9,28.17 3512.7,30.86 3534.5,34.04C3556.4,37.22 3578.2,40.87 3600.0,44.72C3621.8,48.57 3643.6,52.60 3665.5,56.58C3687.3,60.57 3709.1,64.50 3730.9,68.24C3752.7,71.97 3774.5,75.51 3796.4,78.81C3818.2,82.11 3840.0,85.17 3861.8,88.03C3883.6,90.88 3905.5,93.52 3927.3,96.01C3949.1,98.50 3970.9,100.83 3992.7,103.03C4014.5,105.22 4036.4,107.28 4058.2,109.15C4080.0,111.03 4101.8,112.71 4123.6,114.08C4145.5,115.46 4167.3,116.51 4189.1,117.08C4210.9,117.64 4232.7,117.72 4254.5,117.14C4276.4,116.55 4298.2,115.31 4320.0,113.32"/>
-    </svg>
-    <svg class="o1" viewBox="0 0 4320 200" preserveAspectRatio="none">
-      <path d="M0,112.00C21.8,118.66 43.6,125.32 65.5,131.54C87.3,137.75 109.1,143.51 130.9,148.47C152.7,153.43 174.5,157.58 196.4,160.73C218.2,163.88 240.0,166.03 261.8,167.17C283.6,168.30 305.5,168.43 327.3,167.70C349.1,166.97 370.9,165.39 392.7,163.20C414.5,161.00 436.4,158.21 458.2,155.07C480.0,151.94 501.8,148.48 523.6,144.89C545.5,141.31 567.3,137.61 589.1,133.92C610.9,130.23 632.7,126.54 654.5,122.89C676.4,119.24 698.2,115.62 720.0,112.00C741.8,108.38 763.6,104.76 785.5,101.11C807.3,97.46 829.1,93.77 850.9,90.08C872.7,86.39 894.5,82.69 916.4,79.11C938.2,75.52 960.0,72.06 981.8,68.93C1003.6,65.79 1025.5,63.00 1047.3,60.80C1069.1,58.61 1090.9,57.03 1112.7,56.30C1134.5,55.57 1156.4,55.70 1178.2,56.83C1200.0,57.97 1221.8,60.12 1243.6,63.27C1265.5,66.42 1287.3,70.57 1309.1,75.53C1330.9,80.49 1352.7,86.25 1374.5,92.46C1396.4,98.68 1418.2,105.34 1440.0,112.00C1461.8,118.66 1483.6,125.32 1505.5,131.54C1527.3,137.75 1549.1,143.51 1570.9,148.47C1592.7,153.43 1614.5,157.58 1636.4,160.73C1658.2,163.88 1680.0,166.03 1701.8,167.17C1723.6,168.30 1745.5,168.43 1767.3,167.70C1789.1,166.97 1810.9,165.39 1832.7,163.20C1854.5,161.00 1876.4,158.21 1898.2,155.07C1920.0,151.94 1941.8,148.48 1963.6,144.89C1985.5,141.31 2007.3,137.61 2029.1,133.92C2050.9,130.23 2072.7,126.54 2094.5,122.89C2116.4,119.24 2138.2,115.62 2160.0,112.00C2181.8,108.38 2203.6,104.76 2225.5,101.11C2247.3,97.46 2269.1,93.77 2290.9,90.08C2312.7,86.39 2334.5,82.69 2356.4,79.11C2378.2,75.52 2400.0,72.06 2421.8,68.93C2443.6,65.79 2465.5,63.00 2487.3,60.80C2509.1,58.61 2530.9,57.03 2552.7,56.30C2574.5,55.57 2596.4,55.70 2618.2,56.83C2640.0,57.97 2661.8,60.12 2683.6,63.27C2705.5,66.42 2727.3,70.57 2749.1,75.53C2770.9,80.49 2792.7,86.25 2814.5,92.46C2836.4,98.68 2858.2,105.34 2880.0,112.00C2901.8,118.66 2923.6,125.32 2945.5,131.54C2967.3,137.75 2989.1,143.51 3010.9,148.47C3032.7,153.43 3054.5,157.58 3076.4,160.73C3098.2,163.88 3120.0,166.03 3141.8,167.17C3163.6,168.30 3185.5,168.43 3207.3,167.70C3229.1,166.97 3250.9,165.39 3272.7,163.20C3294.5,161.00 3316.4,158.21 3338.2,155.07C3360.0,151.94 3381.8,148.48 3403.6,144.89C3425.5,141.31 3447.3,137.61 3469.1,133.92C3490.9,130.23 3512.7,126.54 3534.5,122.89C3556.4,119.24 3578.2,115.62 3600.0,112.00C3621.8,108.38 3643.6,104.76 3665.5,101.11C3687.3,97.46 3709.1,93.77 3730.9,90.08C3752.7,86.39 3774.5,82.69 3796.4,79.11C3818.2,75.52 3840.0,72.06 3861.8,68.93C3883.6,65.79 3905.5,63.00 3927.3,60.80C3949.1,58.61 3970.9,57.03 3992.7,56.30C4014.5,55.57 4036.4,55.70 4058.2,56.83C4080.0,57.97 4101.8,60.12 4123.6,63.27C4145.5,66.42 4167.3,70.57 4189.1,75.53C4210.9,80.49 4232.7,86.25 4254.5,92.46C4276.4,98.68 4298.2,105.34 4320.0,112.00L4320,200 L0,200 Z"/>
-    </svg>
-    </div>
   </div>
   <div class="palco">
     <div class="scena">
@@ -1431,10 +1384,9 @@ try {
   const dolce = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
   const lancio = t => t * t * t;
 
-  /* ---------- testata e onda ---------- */
+  /* ---------- testata ---------- */
   const testata = document.getElementById('testata');
   const risveglio = document.getElementById('risveglio');
-  const onde = document.querySelector('.onde');
 
   /* ---------- la facciata giorno/notte ---------- */
   const doppia = document.querySelector('.doppia');
@@ -1521,6 +1473,8 @@ try {
   const posa = () => {
     const rh = risveglio.getBoundingClientRect();
     testata.classList.toggle('posata', rh.bottom <= 76);
+    /* la corsia si scrive al primo accenno di scorrimento, non al caricamento */
+    testata.classList.toggle('mostra', scrollY > 40);
 
     /* la corsia laterale sopra l'unica sezione scura */
 
@@ -1558,9 +1512,6 @@ try {
         c.style.filter = `drop-shadow(0 ${8 + u * 26}px ${16 + u * 34}px rgba(60,38,18,${.14 + u * .12}))`;
       });
     }
-
-    /* l'onda si sfasa mentre l'hero se ne va */
-    if (onde) onde.style.setProperty('--o', morsa(-rh.top / Math.max(1, rh.height), 0, 1).toFixed(4));
 
     const mezzo = innerHeight / 2;
     let scelta = null;
