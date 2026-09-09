@@ -67,6 +67,13 @@ img,video{max-width:100%}
 .contenitore{max-width:1240px;margin:0 auto;padding:0 40px;width:100%}
 @media (max-width:760px){.contenitore{padding:0 22px}}
 
+@media (max-width:760px){
+  /* Su 375px la fibra da 3,3px pesa quanto su 1400: in proporzione
+     diventa rumore. Piastrella piu' piccola e piu' tenue.          */
+  :root{--grana: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='v' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.02 .16' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='.5'/></feComponentTransfer></filter><filter id='f' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.3' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='.8'/></feComponentTransfer></filter><rect width='300' height='300' filter='url(%23v)' opacity='.16'/><rect width='300' height='300' filter='url(%23f)' opacity='.28'/></svg>")}
+  body{background-size:190px 190px}
+}
+
 /* --- caratteri di servizio: etichette, numeri, tag --- */
 .mono,.tag,.conta,.ora,.menu,.microazione,.didascalia,.occhiello{
   font-family:"DM Mono",ui-monospace,monospace;font-weight:400;
@@ -474,6 +481,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   transform:translateY(calc(var(--sp,0) * -340vh));will-change:transform;
 }
 .satellite{position:absolute;width:clamp(218px,21.8vw,309px);margin:0;z-index:3}
+.satellite.sx{left:2%}
+.satellite.dx{right:2%}
 .satellite .francobollo{padding:9px 9px 11px}
 /* il corpo segue la larghezza del francobollo: a finestra stretta, a corpo
    fisso, «Fino a mezzogiorno · fino alle 12» andava a capo */
@@ -490,13 +499,26 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 @media (max-width:768px){
   .colazione{height:340vh}
   .scena{padding:0 22px}
-  .cima{padding-top:76px}
+  /* misurato: a 360x640 la scena chiedeva 723px in 640. I margini
+     fissi erano il grosso del conto, quindi diventano proporzionali
+     all'altezza dello schermo invece che a un numero.               */
+  .cima{padding-top:clamp(38px,6.5vh,76px)}
   .cima .display{font-size:clamp(21px,5.6vw,30px);max-width:none}
-  .torta{width:min(62vw,300px)}
-  .voci{min-height:150px}
+  .torta{width:min(62vw,32vh,300px)}
+  .voci{min-height:clamp(96px,16vh,150px)}
   .voce h3{font-size:clamp(24px,6.4vw,32px)}
-  .satelliti{display:none}
-  .fondo{padding-bottom:96px}
+  /* I francobolli tornano: prima erano spenti perche' a piena taglia
+     coprivano il testo. Piu' piccoli, tirati oltre il bordo e messi
+     dietro, passano nei margini della crostata invece che sopra.   */
+  .satellite{width:34vw}
+  .satellite.sx{left:-8vw}
+  .satellite.dx{right:-8vw}
+  .satelliti{z-index:0}
+  .satellite .francobollo{padding:6px 6px 8px}
+  /* la scena sta sempre davanti: le parole non si leggono mai
+     attraverso un francobollo */
+  .cima,.centro,.voci,.fondo{position:relative;z-index:2}
+  .fondo{padding-bottom:clamp(46px,9vh,96px)}
 }
 @media (prefers-reduced-motion:reduce){
   .colazione{height:auto;padding:clamp(92px,13vh,176px) 0}
@@ -570,7 +592,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   display:flex;gap:clamp(22px,2.6vw,40px);padding:0 40px;
   will-change:transform;
 }
-@media (max-width:900px),(prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce){
   /* niente aggancio: torna una fila che si trascina col dito */
   #camere{padding:clamp(92px,13vh,176px) 0;height:auto}
   #camere > .contenitore{position:static;height:auto;display:block}
@@ -643,7 +665,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   position:absolute;top:-24%;right:-34%;width:126%;height:126%;
   opacity:.62;color:var(--rosso);transform:rotate(-16deg);pointer-events:none;
 }
-@media (max-width:900px){
+@media (prefers-reduced-motion:reduce){
   .bussola{grid-template-columns:1fr;gap:44px}
   .bussola .distanze{flex-direction:row;flex-wrap:wrap}
   .retro{justify-self:start;width:min(78vw,340px)}
@@ -667,8 +689,9 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--fumo);padding:12px 2px 2px;
 }
-@media (max-width:900px),(prefers-reduced-motion:reduce){
-  /* impilate no: sotto la soglia si leggono tutte, una sotto l'altra */
+@media (prefers-reduced-motion:reduce){
+  /* solo chi chiede meno movimento le trova impilate, una sotto l'altra:
+     prima bastava un telefono, e lo sfogliamento spariva dove serve di piu' */
   .mazzo{position:static;width:auto;aspect-ratio:auto;display:grid;gap:34px}
   .carta-mazzo{position:static;transform:none!important;opacity:1!important;filter:none!important}
 }
@@ -707,7 +730,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   transition:none;
 }
 
-@media (max-width:900px),(prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce){
   /* niente perno: la sezione torna un blocco che si legge scorrendo */
   #dove-sei{padding:clamp(92px,13vh,176px) 0;height:auto}
   #dove-sei > .contenitore{position:static;height:auto;display:block}
@@ -715,6 +738,44 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   .luogo .mazzo{height:auto;width:auto;margin-top:clamp(40px,6vh,72px);transform:none}
   .luogo .bussola{opacity:1;transform:none}
   .luogo .retro{width:min(78vw,340px)}
+}
+
+/* ======================================================================
+   IL TELEFONO — le stesse due scene, impaginate per una colonna
+   Non si spengono: si rimpicciolisce quello che va rimpicciolito. Il
+   «no-preference» serve perche' chi chiede meno movimento deve trovare
+   le versioni ferme di sopra, non queste.                            */
+@media (max-width:900px) and (prefers-reduced-motion:no-preference){
+
+  /* --- dove sei: numeri e cartolina in alto, il mazzo sotto --- */
+  #dove-sei{height:280vh}
+  #dove-sei > .contenitore{gap:clamp(10px,1.4vh,18px)}
+  .luogo{display:block}
+  .luogo .bussola{margin-top:0;display:block}
+  /* i tre numeri in riga: in colonna si mangiavano 229px di 640 */
+  .luogo .bussola .distanze{
+    display:flex;flex-direction:row;justify-content:space-between;
+    gap:clamp(8px,3vw,18px);margin:0;
+  }
+  .luogo .distanze p{flex:1;min-width:0}
+  .luogo .distanze b{font-size:clamp(30px,9vw,42px)}
+  .luogo .distanze span{font-size:9px;letter-spacing:.1em}
+  /* Il retro della cartolina qui non entra: a 360px l'indirizzo va a
+     capo e il cartoncino si mangia 291px dei 640 disponibili. È un
+     oggetto decorativo — l'indirizzo sta nel piede e nell'H2 — e la
+     scena qui serve allo sfogliamento. Sopra i 900px torna.        */
+  .luogo .retro{display:none}
+  /* il mazzo si misura in larghezza: l'altezza qui e' il vincolo scarso */
+  .luogo .mazzo{
+    width:100%;height:auto;aspect-ratio:3/2.28;
+    margin:clamp(14px,2.2vh,28px) 0 0;
+  }
+
+  /* --- le camere: stesso scorrimento laterale, schede piu' larghe --- */
+  #camere{height:260vh}
+  .camere-pista{margin:clamp(18px,2.6vh,34px) -22px 0}
+  .camere-listino{padding:0 22px;gap:18px}
+  .camera{flex:0 0 68vw}
 }
 
 /* --- la facciata giorno e notte ---------------------------------------
@@ -868,10 +929,14 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   .menu,.testata .verifica,.testata .telefono{display:none}
   .apri{display:block;margin-left:auto}
   .barra{display:flex}
-  .risveglio video,.risveglio .fermo{object-position:34% center}
+  /* Il ritaglio verticale mangiava lo scoglio: al 34% la finestra del
+     telefono si ferma molto prima dei 940px del fotogramma dove lo
+     scoglio comincia. All'80% entra, e a sinistra resta acqua per il
+     titolo. È il soggetto del video, non lo sfondo.                 */
+  .risveglio video,.risveglio .fermo{object-position:80% center}
   .risveglio::before{background:
     linear-gradient(180deg, rgba(252,250,246,.95) 0, rgba(252,250,246,.45) 92px, rgba(252,250,246,0) 185px),
-    linear-gradient(180deg, rgba(252,250,246,0) 40%, rgba(252,250,246,.6) 58%, rgba(252,250,246,.94) 78%)}
+    linear-gradient(180deg, rgba(252,250,246,0) 47%, rgba(252,250,246,.58) 64%, rgba(252,250,246,.94) 82%)}
   .risveglio .dentro{align-items:flex-end;padding-bottom:150px}
   .momento{padding:11vh 0}
   .timbro{width:88px;height:88px}
@@ -956,7 +1021,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 
 <!-- ============ 01 · IL RISVEGLIO ============ -->
 <section class="risveglio" id="risveglio" aria-labelledby="t-risveglio">
-  <video autoplay muted loop playsinline preload="none" id="mare"
+  <video autoplay muted loop playsinline webkit-playsinline preload="none" id="mare"
          poster="video/mare-2.jpg" data-desktop-src="video/mare-2.mp4"
          aria-label="Il mare di Misano Adriatico all'alba, la risacca su uno scoglio"></video>
   <div class="dentro">
@@ -1048,7 +1113,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
     <!-- i francobolli stanno sul palco e non nella scena: così i loro bordi
          sono quelli della finestra, non quelli del contenitore da 1240 -->
     <div class="satelliti" aria-hidden="true">
-      <figure class="satellite" style="top:74vh;left:1%;rotate:-2.2deg">
+      <figure class="satellite sx" style="top:74vh;rotate:-2.2deg">
         <div class="francobollo">
           <svg class="timbro" viewBox="0 0 100 100" style="top:-22px;right:-18px" aria-hidden="true">
             <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.6"/>
@@ -1067,7 +1132,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           <figcaption><span>Le crostate</span><span class="valore">fatte in casa</span></figcaption>
       </div>
       </figure>
-      <figure class="satellite" style="top:121vh;right:2%;rotate:1.6deg">
+      <figure class="satellite dx" style="top:121vh;rotate:1.6deg">
         <div class="francobollo">
           <div class="posto" style="--tinta:var(--foto-cupo);--forma:4/5"
                role="img" aria-label="Mani che versano il caffè">
@@ -1078,7 +1143,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           <figcaption><span>Il cappuccino</span><span class="valore">al momento</span></figcaption>
       </div>
       </figure>
-      <figure class="satellite" style="top:168vh;left:3%;rotate:-1.1deg">
+      <figure class="satellite sx" style="top:168vh;rotate:-1.1deg">
         <div class="francobollo">
           <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:4/5"
                role="img" aria-label="Plumcake affettato">
@@ -1089,7 +1154,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           <figcaption><span>Il dolce</span><span class="valore">del giorno</span></figcaption>
       </div>
       </figure>
-      <figure class="satellite" style="top:215vh;right:1%;rotate:2deg">
+      <figure class="satellite dx" style="top:215vh;rotate:2deg">
         <div class="francobollo">
           <div class="posto" style="--tinta:var(--foto-freddo);--forma:4/5"
                role="img" aria-label="Affettati e uova">
@@ -1100,7 +1165,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           <figcaption><span>Il salato</span><span class="valore">dolce e salato</span></figcaption>
       </div>
       </figure>
-      <figure class="satellite" style="top:262vh;left:2%;rotate:-1.7deg">
+      <figure class="satellite sx" style="top:262vh;rotate:-1.7deg">
         <div class="francobollo">
           <div class="posto" style="--tinta:var(--foto-freddo);--forma:4/5"
                role="img" aria-label="Etichette del buffet">
@@ -1111,7 +1176,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           <figcaption><span>Su richiesta</span><span class="valore">la sera prima</span></figcaption>
       </div>
       </figure>
-      <figure class="satellite" style="top:309vh;right:3%;rotate:1.2deg">
+      <figure class="satellite dx" style="top:309vh;rotate:1.2deg">
         <div class="francobollo">
           <div class="posto chiaro" style="--tinta:var(--foto-caldo);--forma:4/5"
                role="img" aria-label="La sala alle dodici">
@@ -1500,9 +1565,24 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   const lento = c && (c.saveData === true || /^(slow-)?2g$/.test(c.effectiveType || ''));
   if (lento) return;                     /* resta il fermo immagine, e va bene così */
 
+  /* Il bug: si chiedeva play() nello stesso istante in cui si assegnava
+     la sorgente. Al primo caricamento non c'è ancora un fotogramma, la
+     promessa viene rifiutata e resta il poster; alla seconda visita il
+     file è in cache e parte. Da qui il «se ricarico funziona».
+     Si chiede quando c'è davvero qualcosa da mostrare, e come ultima
+     rete al primo tocco: alcuni sistemi lo pretendono comunque.      */
+  const avvia = v => { const q = v.play(); if (q && q.catch) q.catch(() => {}); };
   const parti = () => document.querySelectorAll('video[data-desktop-src]').forEach(v => {
     v.src = v.dataset.desktopSrc;
-    if (!ridotto) v.play().catch(() => {});   /* se fallisce resta il poster */
+    v.load();
+    if (ridotto) return;
+    v.addEventListener('loadeddata', () => avvia(v), {once: true});
+    v.addEventListener('canplay',    () => avvia(v), {once: true});
+    avvia(v);
+    const sblocca = () => avvia(v);
+    addEventListener('touchstart', sblocca, {once: true, passive: true});
+    addEventListener('pointerdown', sblocca, {once: true});
+    addEventListener('scroll', sblocca, {once: true, passive: true});
   });
   if (document.readyState === 'complete') parti();
   else addEventListener('load', parti, {once: true});
