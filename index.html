@@ -31,8 +31,15 @@
      Ruoli suoi: il verde è l'azione e le righe, il giallo è solo aree
      piene piccole e non porta MAI testo chiaro — porta testo scuro
      sopra di sé. */
-  --verde:  #2F6A57;
-  --giallo: #E0A63C;
+  /* Allineati alle schede del moodboard, che divergono da maioli-palette.css:
+     là il rosso è #C13A2A, l'ocra non esiste e il testo è #1E1712.
+     Il file resta com'è — si sovrascrive qui, così la fonte non si tocca. */
+  --rosso:      #D14A38;   /* Cartolina '68 — rosso stampa            */
+  --rosso-cupo: #A83526;
+  --ocra:       #E4A93F;   /* Cartolina '68 — ocra, il sole           */
+  --inchiostro: #2A2721;   /* Cartolina '68 — seppia, non nero        */
+  --verde:      #2E7D4F;   /* Brandina — il terzo colore              */
+  --giallo:     var(--ocra);
 
   --foto-caldo:  var(--carta-scura);
   --foto-freddo: var(--azzurro);
@@ -287,22 +294,35 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   .apri{display:none}
 
   /* il contenuto si centra in ciò che resta, non sotto la corsia */
-  /* La corsia galleggia sopra fondi diversi — campo, mare, notte — e una
-     soglia sul «quanto è coperto» funzionava solo per un quarto della corsa.
-     Con difference il bianco si inverte da solo: quasi nero sul campo, quasi
-     bianco sul notte, sempre leggibile. La fusione va sulla corsia INTERA:
-     messa sui figli non fa niente, perché .testata è position:fixed e quindi
-     crea un contesto di impilamento, e i figli si fonderebbero col suo fondo,
-     che è vuoto. Il bottone rosso sta fuori, o diventerebbe un ciano. */
-  .testata{mix-blend-mode:difference;color:#fff}
-  .testata .insegna,.testata .menu a{color:#fff}
-  .testata .insegna .sotto-nome{color:#fff;opacity:.5}
+  /* NIENTE FUSIONE. La difference invertiva la corsia sul fondo — comoda,
+     ma applicandosi al blocco intero rendeva impossibile colorare una voce:
+     un verde sarebbe uscito rosa. Quindi colori espliciti, e sopra l'unica
+     sezione scura si schiariscono con una transizione, che è la parte che
+     fa sembrare il passaggio una cosa sola e non uno scatto. */
+  .testata .insegna,.testata .menu a{
+    color:var(--inchiostro);
+    transition:color .45s cubic-bezier(.16,1,.3,1);
+  }
+  .testata .insegna .sotto-nome,.testata .telefono{
+    color:var(--fumo);transition:color .45s cubic-bezier(.16,1,.3,1);
+  }
+  .testata.su-notte .insegna,
+  .testata.su-notte .menu a{color:var(--notte-testo)}
+  .testata.su-notte .insegna .sotto-nome,
+  .testata.su-notte .telefono{color:var(--sera-fumo,#B9C7CE)}
+
   /* nascosto e mostrato con la stessa specificità della regola del colore,
      se no .testata .telefono{opacity:.6} vince e il telefono non si
      nasconde mai */
-  .testata .telefono{color:#fff;opacity:0}
-  .testata.mostra .telefono{opacity:.6}
-  .testata .menu a::after{background:#fff}
+  .testata .telefono{opacity:0}
+  .testata.mostra .telefono{opacity:.75}
+
+  /* La selezione COLORA la voce, non la sottolinea. Il filetto diceva
+     «questo è un link»; il colore dice «sei qui sopra», ed è anche il
+     modo di far vedere il verde della palette a ogni passaggio. */
+  .menu a::after{display:none}
+  .testata .menu a:hover,
+  .testata.su-notte .menu a:hover{color:var(--verde)}
   .verifica.principale{
     /* top e right vanno azzerati: la regola base li fissa a 0 e con anche
        bottom e left il bottone si stirerebbe per tutta l'altezza */
@@ -1386,6 +1406,7 @@ try {
 
   /* ---------- testata ---------- */
   const testata = document.getElementById('testata');
+  const notte = document.querySelector('.buio');
   const risveglio = document.getElementById('risveglio');
 
   /* ---------- la facciata giorno/notte ---------- */
@@ -1475,6 +1496,13 @@ try {
     testata.classList.toggle('posata', rh.bottom <= 76);
     /* la corsia si scrive al primo accenno di scorrimento, non al caricamento */
     testata.classList.toggle('mostra', scrollY > 40);
+
+    /* e si schiarisce quando l'unica sezione scura occupa il mezzo dello
+       schermo: è lì che la corsia le sta davvero sopra */
+    if (notte) {
+      const rn = notte.getBoundingClientRect(), mezzo = innerHeight / 2;
+      testata.classList.toggle('su-notte', rn.top < mezzo && rn.bottom > mezzo);
+    }
 
     /* la corsia laterale sopra l'unica sezione scura */
 
