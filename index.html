@@ -406,7 +406,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    scena, mai a fianco della crostata.
    Sotto i 768px e con prefers-reduced-motion tutto si impila.
    ============================================================ */
-.colazione{padding:0;height:600vh}
+.colazione{padding:0;height:400vh}
 .colazione .palco{position:sticky;top:0;height:100vh;overflow:hidden;z-index:3}
 .scena{
   position:relative;height:100%;max-width:1240px;margin:0 auto;padding:0 40px;
@@ -485,7 +485,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    si danno il cambio, il contatore. Spariscono solo i francobolli, che al
    minimo di 218px coprirebbero il testo. */
 @media (max-width:768px){
-  .colazione{height:480vh}
+  .colazione{height:340vh}
   .scena{padding:0 22px}
   .cima{padding-top:76px}
   .cima .display{font-size:clamp(21px,5.6vw,30px);max-width:none}
@@ -549,9 +549,25 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    arrivate da fuori. Le camere no: si confrontano, quindi stanno dritte,
    allineate e tutte uguali. La differenza è la stessa che chiede il
    sitemap alle fotografie — stessa angolazione, stessa luce.        */
-.camere-listino{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(22px,2.6vw,40px);margin-top:3.2em}
-@media (max-width:900px){.camere-listino{grid-template-columns:1fr;gap:34px}}
-.camera{margin:0}
+/* --- le camere si scorrono di lato -------------------------------------
+   In griglia erano un tabellone: tre riquadri fermi, tutti uguali. Di
+   lato si sfogliano, e la terza tagliata dal bordo dice da sola che ce
+   n'è dell'altra. Sconfina di 40px per lato, quanto il contenitore, se
+   no la fila sembrerebbe finire dove finisce il testo.               */
+.camere-listino{
+  display:flex;gap:clamp(22px,2.6vw,40px);margin-top:3.2em;
+  overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;scroll-padding-left:40px;
+  margin-left:-40px;margin-right:-40px;padding:0 40px 18px;
+  scrollbar-width:thin;scrollbar-color:var(--rosso) var(--carta-scura);
+}
+.camere-listino::-webkit-scrollbar{height:6px}
+.camere-listino::-webkit-scrollbar-track{background:var(--carta-scura)}
+.camere-listino::-webkit-scrollbar-thumb{background:var(--rosso)}
+@media (max-width:760px){
+  .camere-listino{margin-left:-22px;margin-right:-22px;padding:0 22px 18px;scroll-padding-left:22px}
+}
+.camera{margin:0;flex:0 0 min(74vw,420px);scroll-snap-align:start}
 .camera .posto{--forma:4/3}
 .camera .riga-dati{
   display:flex;align-items:baseline;justify-content:space-between;gap:14px;
@@ -639,6 +655,35 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   /* impilate no: sotto la soglia si leggono tutte, una sotto l'altra */
   .mazzo{position:static;width:auto;aspect-ratio:auto;display:grid;gap:34px}
   .carta-mazzo{position:static;transform:none!important;opacity:1!important;filter:none!important}
+}
+
+/* --- quando ci arrivi, ci sei ------------------------------------------
+   Prima le cartoline si sfogliavano mentre la sezione passava: le vedevi
+   dal finestrino. Ora la sezione si ferma e tiene lo schermo, e si
+   sfogliano mentre stai lì. Il perno è il contenitore stesso — un palco
+   in più non serviva.                                                  */
+#dove-sei{padding:0;height:300vh}
+#dove-sei > .contenitore{
+  position:sticky;top:0;height:100vh;
+  display:grid;align-content:center;gap:clamp(12px,1.8vh,24px);
+}
+.luogo{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
+  gap:clamp(28px,4vw,68px);align-items:center;
+}
+/* dentro al luogo i numeri si stringono: la colonna è meta' schermo */
+.luogo .bussola{margin-top:0;gap:clamp(20px,2.4vw,38px)}
+.luogo .retro{width:min(30vh,300px)}
+/* il mazzo si misura in altezza, se no a schermo basso esce dal palco */
+.luogo .mazzo{margin:0;width:auto;height:min(46vh,420px);justify-self:center}
+
+@media (max-width:900px),(prefers-reduced-motion:reduce){
+  /* niente perno: la sezione torna un blocco che si legge scorrendo */
+  #dove-sei{padding:clamp(92px,13vh,176px) 0;height:auto}
+  #dove-sei > .contenitore{position:static;height:auto;display:block}
+  .luogo{display:block}
+  .luogo .mazzo{height:auto;width:auto;margin-top:clamp(40px,6vh,72px)}
+  .luogo .retro{width:min(78vw,340px)}
 }
 
 /* --- la facciata giorno e notte ---------------------------------------
@@ -1136,6 +1181,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
     <h2 id="t-dove" class="sr-solo">A 800 m dalla spiaggia, 150 m dalla stazione, 5 minuti dal Misano World Circuit</h2>
     <p class="display" aria-hidden="true">Il mare è di là <em>e il treno è dietro l'angolo</em></p>
 
+    <div class="luogo">
     <div class="bussola">
       <div class="distanze">
         <p><b>800</b><small>m</small><span>dalla spiaggia</span></p>
@@ -1215,6 +1261,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           </div>
         </div>
       </figure>
+    </div>
     </div>
     <a class="microazione" href="/dove-siamo">Apri la mappa</a>
   </div>
@@ -1437,8 +1484,8 @@ try {
   /* ---------- il mazzo di cartoline ---------- */
   const dove  = document.getElementById('dove-sei');
   const carte = [...document.querySelectorAll('.carta-mazzo')];
-  const VIA = [.30, .52, 9];        /* quando ogni carta si stacca; l'ultima resta */
-  const DURATA = .20;
+  const VIA = [.16, .46, 9];        /* quando ogni carta si stacca; l'ultima resta */
+  const DURATA = .30;
 
   /* ---------- indice delle ore ---------- */
   const ancore = [...document.querySelectorAll('.ore a')]
@@ -1542,8 +1589,11 @@ try {
 
     /* le cartoline si sfogliano mentre la sezione attraversa lo schermo */
     if (dove && carte.length) {
-      const rd = dove.getBoundingClientRect();
-      const q = morsa((innerHeight - rd.top) / (innerHeight + rd.height), 0, 1);
+      /* agganciata: il progresso è quanto si è scorso DENTRO il perno,
+         non quanto la sezione ha attraversato lo schermo */
+      const corsaDove = dove.offsetHeight - innerHeight;
+      const q = corsaDove <= 0 ? 0
+              : morsa((scrollY - dove.offsetTop) / corsaDove, 0, 1);
       const uscita = carte.map((_, i) => morsa((q - VIA[i]) / DURATA, 0, 1));
       carte.forEach((c, i) => {
         /* quante carte sopra se ne sono andate: le altre avanzano di conseguenza */
