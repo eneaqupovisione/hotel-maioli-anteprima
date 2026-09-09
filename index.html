@@ -398,8 +398,20 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .risveglio{position:relative;height:100vh;height:100dvh;min-height:580px;overflow:hidden;background:var(--campo-basso)}
 /* Il 62% serviva allo scoglio del video precedente, che stava a destra.
    Qui la composizione e' simmetrica e il sole sta in mezzo: spostarla
-   lo taglierebbe fuori. Centrata, e vale anche in verticale.        */
-.risveglio video,.risveglio .fermo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+   lo taglierebbe fuori. Centrata, e vale anche in verticale.
+   Il fondale e' piu' alto della finestra e sporge di 20% sopra e sotto:
+   e' quel gioco che permette al parallasse di muoverlo senza mai
+   scoprire il bordo. Senza sporgenza servirebbe uno scale(), che su un
+   video si vede subito perche' lo sfoca.
+   La sporgenza e' calcolata sull'altezza dell'eroe, lo spostamento su
+   quella della finestra, e da telefono le due non coincidono: 100dvh si
+   accorcia quando riappare la barra dell'indirizzo. Con 20% contro 12%
+   il margine regge anche in quel caso.                              */
+.risveglio video,.risveglio .fermo{
+  position:absolute;left:0;right:0;top:-20%;width:100%;height:140%;
+  object-fit:cover;object-position:center;will-change:transform;
+}
+.risveglio .dentro{will-change:transform,opacity}
 .risveglio::before{
   content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
   background:
@@ -1624,6 +1636,8 @@ try {
   const testata = document.getElementById('testata');
   const notte = document.querySelector('.buio');
   const risveglio = document.getElementById('risveglio');
+  const fondale = risveglio && risveglio.querySelector('video,.fermo');
+  const dentro  = risveglio && risveglio.querySelector('.dentro');
 
   /* ---------- la facciata giorno/notte ---------- */
   const doppia = document.querySelector('.doppia');
@@ -1713,6 +1727,24 @@ try {
   /* quello che si decide sulla posizione, non sul tempo */
   const posa = () => {
     const rh = risveglio.getBoundingClientRect();
+
+    /* Parallasse dell'eroe: due piani a velocita' diverse. Il mare resta
+       indietro — scende mentre la pagina sale — e le parole scivolano su
+       piu' in fretta e sfumano. E' la profondita': se si muovessero
+       insieme sarebbe una sola immagine che scorre.
+       Chi chiede meno movimento non lo riceve, e non e' un ripiego: il
+       video sta fermo dov'e' e la pagina funziona uguale.            */
+    /* innerHeight 0 vuol dire finestra non ancora misurabile, non
+       «scorso fino in fondo»: senza questa guardia la divisione manda
+       q a 1 e il titolo dell'eroe si spegne da solo.               */
+    if (fondale && innerHeight > 0 && !ridotto.matches) {
+      const q = morsa(-rh.top / innerHeight, 0, 1);
+      fondale.style.transform = `translate3d(0,${(q * innerHeight * .12).toFixed(1)}px,0)`;
+      if (dentro) {
+        dentro.style.transform = `translate3d(0,${(-q * innerHeight * .10).toFixed(1)}px,0)`;
+        dentro.style.opacity = String(1 - morsa((q - .30) / .48, 0, 1));
+      }
+    }
     testata.classList.toggle('posata', rh.bottom <= 76);
     /* la corsia si scrive al primo accenno di scorrimento, non al caricamento */
     testata.classList.toggle('mostra', scrollY > 40);
