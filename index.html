@@ -43,10 +43,14 @@
   --foto-caldo:  var(--carta-scura);
   --foto-freddo: var(--azzurro);
   --foto-cupo:   var(--azzurro-cupo);
+
+  --grana: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='v' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.02 .16' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='.5'/></feComponentTransfer></filter><filter id='f' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.3' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='.8'/></feComponentTransfer></filter><rect width='360' height='360' filter='url(%23v)' opacity='.25'/><rect width='360' height='360' filter='url(%23f)' opacity='.42'/></svg>");
 }
 
 body{
-  margin:0;background:var(--campo);color:var(--inchiostro);
+  margin:0;color:var(--inchiostro);
+  background-color:var(--campo);background-image:var(--grana);
+  background-blend-mode:multiply;
   /* corpo in Fraunces: DM Mono a 14-15px è troppo piccolo per i paragrafi */
   font-family:Fraunces,Georgia,serif;font-optical-sizing:auto;font-weight:300;
   font-size:17px;line-height:1.66;-webkit-font-smoothing:antialiased;
@@ -95,7 +99,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 
 /* --- il francobollo: carta, dentellatura, e nient'altro --- */
 .francobollo{
-  position:relative;background:var(--carta);padding:13px 13px 15px;margin:0;
+  position:relative;padding:13px 13px 15px;margin:0;
+  background-color:var(--carta);background-image:var(--grana);background-blend-mode:multiply;
   box-shadow:0 1px 0 var(--carta-scura);
 }
 .francobollo::before{
@@ -120,7 +125,9 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 /* --- la cartolina: bordo posta aerea.
    Sottile per forza: rosso e azzurro sono inchiostri, non vernici, e
    sopra l'1% della superficie il sito torna a sembrare a fasce. --- */
-.cartolina{margin:0}
+/* il cartoncino: il fondo glielo dà maioli-palette.css con una regola
+   condivisa, che resta com'è — qui si aggiunge solo la trama.        */
+.cartolina{margin:0;background-image:var(--grana);background-blend-mode:multiply}
 /* Le striature: è qui che i colori stanno tutti insieme per mestiere.
    Rosso e azzurro sono i principali, verde e giallo entrano come
    dettaglio nello stesso passo — è un bordo posta aerea, non una
@@ -134,7 +141,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
     var(--giallo)  30px 35px, var(--campo) 35px 40px);
 }
 /* cartoncino crema, non bianco da stampante: è una cartolina */
-.cartolina .interno{background:var(--carta);padding:7px}
+.cartolina .interno{background-color:var(--carta);background-image:var(--grana);
+  background-blend-mode:multiply;padding:7px}
 .cartolina figcaption{
   font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--fumo);padding:12px 1px 0;
@@ -181,7 +189,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    ============================================================ */
 .testata{position:fixed;top:0;left:0;right:0;z-index:40;
   transition:background .4s ease,border-color .4s ease;border-bottom:1px solid transparent}
-.testata.posata{background:var(--campo);border-bottom-color:var(--filo)}
+.testata.posata{background-color:var(--campo);background-image:var(--grana);background-blend-mode:multiply;border-bottom-color:var(--filo)}
 .testata .riga{display:flex;align-items:center;gap:28px;height:76px}
 .insegna{display:flex;align-items:center;gap:12px;text-decoration:none;flex:0 0 auto}
 .insegna svg{width:28px;height:28px;flex:0 0 auto}
@@ -391,8 +399,6 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   letter-spacing:.18em;text-transform:uppercase;color:var(--fumo)}
 .risveglio .identita b{color:var(--inchiostro);font-weight:500}
 
-}
-
 /* ============================================================
    LA COLAZIONE — la crostata al centro, come un piatto
    Il disco sta in mezzo e porta il testo. Niente colonne laterali:
@@ -400,7 +406,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    scena, mai a fianco della crostata.
    Sotto i 768px e con prefers-reduced-motion tutto si impila.
    ============================================================ */
-.colazione{padding:0;height:520vh}
+.colazione{padding:0;height:600vh}
 .colazione .palco{position:sticky;top:0;height:100vh;overflow:hidden;z-index:3}
 .scena{
   position:relative;height:100%;max-width:1240px;margin:0 auto;padding:0 40px;
@@ -479,7 +485,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    si danno il cambio, il contatore. Spariscono solo i francobolli, che al
    minimo di 218px coprirebbero il testo. */
 @media (max-width:768px){
-  .colazione{height:420vh}
+  .colazione{height:480vh}
   .scena{padding:0 22px}
   .cima{padding-top:76px}
   .cima .display{font-size:clamp(21px,5.6vw,30px);max-width:none}
@@ -577,7 +583,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .retro{margin:0;width:min(42vh,392px);justify-self:center;rotate:-1.6deg}
 .retro .interno{
   display:grid;grid-template-columns:1fr 1px 1.1fr;gap:clamp(12px,1.4vw,20px);
-  background:var(--campo-alto);padding:clamp(14px,1.6vw,20px);aspect-ratio:3/2;
+  background-color:var(--campo-alto);background-image:var(--grana);background-blend-mode:multiply;
+  padding:clamp(14px,1.6vw,20px);aspect-ratio:3/2;
 }
 .retro .divisorio{background:var(--filo)}
 /* le righe su cui si scrive: non un fondo, un rigo */
@@ -596,7 +603,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   width:clamp(48px,5vw,66px);
 }
 .retro .bollo .quadro{
-  background:var(--carta);aspect-ratio:4/5;display:grid;place-items:center;
+  background-color:var(--carta);background-image:var(--grana);background-blend-mode:multiply;
+  aspect-ratio:4/5;display:grid;place-items:center;
 }
 .retro .bollo .quadro svg{width:56%;height:56%;color:var(--carta-scura)}
 .retro .bollo .timbro{
@@ -713,7 +721,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .modulo{
   display:flex;flex-wrap:wrap;gap:clamp(16px,1.8vw,26px);align-items:flex-end;
   margin-top:3em;padding:clamp(22px,2.4vw,34px);
-  background:var(--carta);border:1px solid var(--carta-scura);
+  background-color:var(--carta);background-image:var(--grana);background-blend-mode:multiply;
+  border:1px solid var(--carta-scura);
   box-shadow:0 1px 0 var(--carta-scura);position:relative;
 }
 /* la stessa striatura in testa al modulo: anche questo è un pezzo di posta */
@@ -757,17 +766,24 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .piede a:hover{color:var(--rosso)}
 @media (max-width:760px){.piede .colonne{grid-template-columns:1fr;gap:34px}}
 
-/* --- grana della carta: lega foto e fondi --- */
-.grana{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;mix-blend-mode:multiply;opacity:.5}
+/* --- grana della carta ---------------------------------------------
+   Non è un velo sopra la pagina: è lo sfondo della carta. Un velo fisso
+   granulava anche il video, l'azzurro e la sezione scura, dove di carta
+   non ce n'è. Messa qui la prende solo chi è bianco: tutto ciò che
+   dipinge un fondo proprio — l'eroe, il buio, i riquadri a tinta — la
+   copre da sé, senza bisogno di eccezioni.
+   La piastrella è da 360px e si ricuce ai bordi (stitchTiles): due
+   trame, la fibra a 3,3px e la vergatura tirata in orizzontale.      */
 
 /* --- mobile --- */
-.tendina{position:fixed;inset:0;z-index:45;background:var(--campo);display:none;
+.tendina{position:fixed;inset:0;z-index:45;background-color:var(--campo);background-image:var(--grana);background-blend-mode:multiply;display:none;
   flex-direction:column;justify-content:center;gap:2px;padding:0 22px}
 .tendina.aperta{display:flex}
 .tendina a{font-size:29px;text-decoration:none;padding:7px 0}
 .tendina .chiudi{position:absolute;top:22px;right:16px;font-size:26px;background:none;border:0;cursor:pointer}
 .barra{display:none;position:fixed;left:0;right:0;bottom:0;z-index:46;gap:10px;
-  background:var(--campo);border-top:1px solid var(--filo);
+  background-color:var(--campo);background-image:var(--grana);background-blend-mode:multiply;
+  border-top:1px solid var(--filo);
   padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
 .barra .verifica{flex:1;text-align:center}
 
@@ -1328,36 +1344,6 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   <button class="apri" style="display:block" id="apri2" aria-label="Apri il menu"><span></span><span></span></button>
 </div>
 
-<!-- La grana: due strati, perché la carta non è rumore uniforme.
-     Uno fitto per la fibra, uno molto largo per la disuniformità della
-     posa — è il secondo a farla sembrare carta invece che carta vetrata.
-     Le istruzioni chiedono opacità .5 in tutto: .45 x .36 faceva 0,16. -->
-<svg class="grana" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <!-- baseFrequency è in px: .62 vuol dire un grano largo 1,6 px, che su
-       uno schermo retina è mezzo pixel e non si vede. La fibra sta a .30
-       (~3 px, la soglia sotto cui l'occhio non legge più la trama). -->
-  <filter id="fibra">
-    <feTurbulence type="fractalNoise" baseFrequency=".30" numOctaves="4" stitchTiles="stitch"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer><feFuncA type="linear" slope=".8"/></feComponentTransfer>
-  </filter>
-  <!-- la vergatura: fibre tirate, non puntini. Larga in orizzontale e
-       stretta in verticale, come la carta uscita dalla macchina. -->
-  <filter id="vergatura">
-    <feTurbulence type="fractalNoise" baseFrequency=".006 .14" numOctaves="3" stitchTiles="stitch"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer><feFuncA type="linear" slope=".5"/></feComponentTransfer>
-  </filter>
-  <!-- la posa: macchie larghissime, l'inchiostro che prende disuguale -->
-  <filter id="posa">
-    <feTurbulence type="fractalNoise" baseFrequency=".009" numOctaves="2" stitchTiles="stitch"/>
-    <feColorMatrix type="saturate" values="0"/>
-    <feComponentTransfer><feFuncA type="linear" slope=".34"/></feComponentTransfer>
-  </filter>
-  <rect width="100%" height="100%" filter="url(#posa)"      opacity=".6"/>
-  <rect width="100%" height="100%" filter="url(#vergatura)" opacity=".5"/>
-  <rect width="100%" height="100%" filter="url(#fibra)"     opacity=".85"/>
-</svg>
 
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Hotel","name":"Hotel Maioli",
