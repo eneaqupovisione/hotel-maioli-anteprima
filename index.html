@@ -396,17 +396,25 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 
 /* --- hero --- */
 .risveglio{position:relative;height:100vh;height:100dvh;min-height:580px;overflow:hidden;background:var(--campo-basso)}
-.risveglio video,.risveglio .fermo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% center}
+/* Il 62% serviva allo scoglio del video precedente, che stava a destra.
+   Qui la composizione e' simmetrica e il sole sta in mezzo: spostarla
+   lo taglierebbe fuori. Centrata, e vale anche in verticale.        */
+.risveglio video,.risveglio .fermo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
 .risveglio::before{
   content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
   background:
     linear-gradient(180deg, rgba(252,250,246,.93) 0, rgba(252,250,246,.5) 90px, rgba(252,250,246,0) 190px),
-    linear-gradient(90deg, rgba(252,250,246,.93) 0, rgba(252,250,246,.85) 26%, rgba(252,250,246,.4) 48%, rgba(252,250,246,0) 64%);
+    linear-gradient(90deg, rgba(252,250,246,.95) 0, rgba(252,250,246,.9) 32%, rgba(252,250,246,.62) 52%, rgba(252,250,246,.18) 70%, rgba(252,250,246,0) 84%);
 }
 .risveglio .dentro{position:relative;z-index:2;height:100%;display:flex;align-items:center;padding:76px 0}
 .risveglio h1{font-size:clamp(42px,6.2vw,84px);max-width:11em}
+/* non piu' --fumo: quel grigio nasceva per la carta, e sopra un video
+   mosso il contrasto non regge nemmeno con il velo.                */
+/* non piu' --fumo: quel grigio nasceva per la carta, e sopra un video
+   mosso il contrasto non regge nemmeno con il velo. E la riga va a capo
+   prima del punto in cui il velo si spegne, se no la coda sparisce. */
 .risveglio .identita{margin-top:2.4em;font-family:"DM Mono",monospace;font-size:11.5px;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--fumo)}
+  letter-spacing:.18em;text-transform:uppercase;color:#6A6055;max-width:34em}
 .risveglio .identita b{color:var(--inchiostro);font-weight:500}
 
 /* ============================================================
@@ -929,14 +937,15 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   .menu,.testata .verifica,.testata .telefono{display:none}
   .apri{display:block;margin-left:auto}
   .barra{display:flex}
-  /* Il ritaglio verticale mangiava lo scoglio: al 34% la finestra del
-     telefono si ferma molto prima dei 940px del fotogramma dove lo
-     scoglio comincia. All'80% entra, e a sinistra resta acqua per il
-     titolo. È il soggetto del video, non lo sfondo.                 */
-  .risveglio video,.risveglio .fermo{object-position:80% center}
+  /* Anche da telefono resta centrata: il ritaglio verticale prende la
+     colonna di mezzo, dove stanno il sole e il suo riflesso.        */
+  .risveglio video,.risveglio .fermo{object-position:center}
   .risveglio::before{background:
     linear-gradient(180deg, rgba(252,250,246,.95) 0, rgba(252,250,246,.45) 92px, rgba(252,250,246,0) 185px),
-    linear-gradient(180deg, rgba(252,250,246,0) 47%, rgba(252,250,246,.58) 64%, rgba(252,250,246,.94) 82%)}
+    /* il velo ricomincia presto: l'avevo abbassato per non coprire lo
+       scoglio del video precedente. Con l'alba il soggetto sta in alto
+       e qui sotto serve solo che il titolo si legga.               */
+    linear-gradient(180deg, rgba(252,250,246,0) 36%, rgba(252,250,246,.66) 55%, rgba(252,250,246,.95) 72%)}
   .risveglio .dentro{align-items:flex-end;padding-bottom:150px}
   .momento{padding:11vh 0}
   .timbro{width:88px;height:88px}
@@ -1022,8 +1031,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 <!-- ============ 01 · IL RISVEGLIO ============ -->
 <section class="risveglio" id="risveglio" aria-labelledby="t-risveglio">
   <video autoplay muted loop playsinline webkit-playsinline preload="none" id="mare"
-         poster="video/mare-2.jpg" data-desktop-src="video/mare-2.mp4"
-         aria-label="Il mare di Misano Adriatico all'alba, la risacca su uno scoglio"></video>
+         poster="video/alba.jpg" data-desktop-src="video/alba.mp4"
+         aria-label="Il sole basso sul mare, la risacca sulla sabbia bagnata"></video>
   <div class="dentro">
     <div class="contenitore">
       <div>
