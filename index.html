@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
 <title>Hotel Maioli — hotel 3 stelle a Misano Adriatico</title>
 <meta name="description" content="Hotel tre stelle a gestione familiare a Misano Adriatico. Colazione a buffet fino alle 12:00, spiaggia convenzionata, animali ammessi. Prenotazione diretta.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,15 +79,15 @@ h1,h2,.display{
 /* --- tag separati da barre, non elenchi puntati --- */
 ul.tag{list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:2.4em 0 0;
   font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fumo)}
-ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
+ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 
 /* --- microazione: un link, mai un bottone --- */
 .microazione{
   display:inline-block;margin-top:2.6em;font-size:12px;letter-spacing:.16em;
   text-transform:uppercase;text-decoration:none;
-  border-bottom:2px solid var(--verde);padding-bottom:5px;
+  border-bottom:2px solid var(--rosso);padding-bottom:5px;
 }
-.microazione:hover{border-bottom-color:var(--rosso)}
+.microazione:hover{border-bottom-color:var(--rosso-cupo);color:var(--rosso-cupo)}
 
 /* ============================================================
    OGGETTI POSTALI — è qui che vive la carta
@@ -142,9 +141,12 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 }
 
 /* --- il timbro postale: uno solo in tutta la pagina --- */
+/* Il timbro è rosso: un annullo postale non è mai stato color inchiostro,
+   ed è il posto dove il rosso stampa della Cartolina '68 fa il suo mestiere
+   invece di aspettare un passaggio del mouse. */
 .timbro{
   position:absolute;z-index:3;width:118px;height:118px;
-  opacity:.5;color:var(--inchiostro);transform:rotate(-14deg);pointer-events:none;
+  opacity:.62;color:var(--rosso);transform:rotate(-14deg);pointer-events:none;
 }
 
 /* --- il posto della foto: tinta unita, ma dice cosa ci va -----------------
@@ -197,7 +199,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
    se no le ultime voci del menu ci finiscono sotto */
 @media (min-width:901px) and (max-width:1099px){.testata .riga{padding-right:214px}}
 .verifica{
-  font-family:"DM Mono",monospace;background:var(--verde);color:#fff;text-decoration:none;white-space:nowrap;
+  font-family:"DM Mono",monospace;background:var(--rosso);color:#fff;text-decoration:none;white-space:nowrap;
   padding:11px 18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
 }
 .verifica:hover{background:#24633e}
@@ -448,7 +450,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .avanzamento .passo{color:var(--rosso)}
 .avanzamento .riga{width:180px;height:1px;background:var(--filo);position:relative}
 .avanzamento .riga i{
-  position:absolute;inset:0;background:var(--verde);
+  position:absolute;inset:0;background:var(--rosso);
   transform-origin:left;transform:scaleX(0);transition:transform .5s ease;
 }
 .fondo .microazione{margin-top:1.9em}
@@ -547,7 +549,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .camera .posto{--forma:4/3}
 .camera .riga-dati{
   display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-  margin-top:14px;padding-bottom:12px;border-bottom:2px solid var(--verde);
+  margin-top:14px;padding-bottom:12px;border-bottom:2px solid var(--rosso);
 }
 .camera .nome{
   font-family:Fraunces,Georgia,serif;font-weight:200;font-size:clamp(19px,1.7vw,26px);
@@ -599,7 +601,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .retro .bollo .quadro svg{width:56%;height:56%;color:var(--carta-scura)}
 .retro .bollo .timbro{
   position:absolute;top:-24%;right:-34%;width:126%;height:126%;
-  opacity:.5;color:var(--inchiostro);transform:rotate(-16deg);pointer-events:none;
+  opacity:.62;color:var(--rosso);transform:rotate(-16deg);pointer-events:none;
 }
 @media (max-width:900px){
   .bussola{grid-template-columns:1fr;gap:44px}
@@ -651,7 +653,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 .doppia .taglio::after{
   content:'';position:absolute;top:50%;left:50%;
   width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;
-  background:var(--campo);box-shadow:0 0 0 1px rgba(20,17,16,.16);
+  background:var(--rosso);box-shadow:0 0 0 3px var(--campo);
 }
 .doppia .didascalie{
   position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;
@@ -756,7 +758,7 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
 @media (max-width:760px){.piede .colonne{grid-template-columns:1fr;gap:34px}}
 
 /* --- grana della carta: lega foto e fondi --- */
-.grana{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;mix-blend-mode:multiply;opacity:.45}
+.grana{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;mix-blend-mode:multiply;opacity:.5}
 
 /* --- mobile --- */
 .tendina{position:fixed;inset:0;z-index:45;background:var(--campo);display:none;
@@ -1326,10 +1328,35 @@ ul.tag li+li::before{content:'/';color:var(--filo);margin:0 .85em}
   <button class="apri" style="display:block" id="apri2" aria-label="Apri il menu"><span></span><span></span></button>
 </div>
 
+<!-- La grana: due strati, perché la carta non è rumore uniforme.
+     Uno fitto per la fibra, uno molto largo per la disuniformità della
+     posa — è il secondo a farla sembrare carta invece che carta vetrata.
+     Le istruzioni chiedono opacità .5 in tutto: .45 x .36 faceva 0,16. -->
 <svg class="grana" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <filter id="g"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="4" stitchTiles="stitch"/>
-  <feColorMatrix type="saturate" values="0"/></filter>
-  <rect width="100%" height="100%" filter="url(#g)" opacity=".36"/>
+  <!-- baseFrequency è in px: .62 vuol dire un grano largo 1,6 px, che su
+       uno schermo retina è mezzo pixel e non si vede. La fibra sta a .30
+       (~3 px, la soglia sotto cui l'occhio non legge più la trama). -->
+  <filter id="fibra">
+    <feTurbulence type="fractalNoise" baseFrequency=".30" numOctaves="4" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".8"/></feComponentTransfer>
+  </filter>
+  <!-- la vergatura: fibre tirate, non puntini. Larga in orizzontale e
+       stretta in verticale, come la carta uscita dalla macchina. -->
+  <filter id="vergatura">
+    <feTurbulence type="fractalNoise" baseFrequency=".006 .14" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".5"/></feComponentTransfer>
+  </filter>
+  <!-- la posa: macchie larghissime, l'inchiostro che prende disuguale -->
+  <filter id="posa">
+    <feTurbulence type="fractalNoise" baseFrequency=".009" numOctaves="2" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".34"/></feComponentTransfer>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#posa)"      opacity=".6"/>
+  <rect width="100%" height="100%" filter="url(#vergatura)" opacity=".5"/>
+  <rect width="100%" height="100%" filter="url(#fibra)"     opacity=".85"/>
 </svg>
 
 <script type="application/ld+json">
