@@ -44,6 +44,14 @@
   --foto-freddo: var(--azzurro);
   --foto-cupo:   var(--azzurro-cupo);
 
+  /* Il grigio della palette, #8C8377, sta a 3,58:1 sul campo e a 3,04:1
+     sulla carta: sotto la soglia di 4,5 che serve al testo piccolo, e lo
+     usavano venti regole, quasi tutte fra i 9 e i 17px. Qui diventa
+     leggibile; resta chiaro solo dove il testo e' grande davvero, cioe'
+     nel corsivo dei titoli, che a 3:1 e' gia' a norma. */
+  --fumo:        #6F675E;   /* 5,33:1 sul campo · 4,53:1 sulla carta   */
+  --fumo-grande: #8C8377;   /* solo oltre i 24px: il corsivo dei titoli */
+
   --grana: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='v' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.02 .16' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='.5'/></feComponentTransfer></filter><filter id='f' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.3' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='.8'/></feComponentTransfer></filter><rect width='360' height='360' filter='url(%23v)' opacity='.25'/><rect width='360' height='360' filter='url(%23f)' opacity='.42'/></svg>");
 }
 
@@ -55,7 +63,10 @@ body{
      carta resta carta anche quando la pagina si ferma.               */
   background-blend-mode:multiply;background-attachment:fixed;
   /* corpo in Fraunces: DM Mono a 14-15px è troppo piccolo per i paragrafi */
-  font-family:Fraunces,Georgia,serif;font-optical-sizing:auto;font-weight:300;
+  /* 300 e' un peso da titolo. A 17px su fondo crema il testo si assottiglia
+     e chi prenota un albergo di famiglia non ha vent'anni. 370 resta leggero
+     ma sta in piedi. */
+  font-family:Fraunces,Georgia,serif;font-optical-sizing:auto;font-weight:370;
   font-size:17px;line-height:1.66;-webkit-font-smoothing:antialiased;
 }
 a{color:inherit}
@@ -87,7 +98,7 @@ h1,h2,.display{
   line-height:1.04;letter-spacing:-.018em;margin:0;
 }
 .display{font-size:clamp(32px,4.6vw,62px);max-width:15em}
-.display em{font-style:italic;color:var(--fumo);font-weight:200}
+.display em{font-style:italic;color:var(--fumo-grande);font-weight:200}
 .testo{max-width:31em;margin:1.7em 0 0}
 
 /* --- tag separati da barre, non elenchi puntati --- */
@@ -130,7 +141,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   text-transform:uppercase;color:var(--fumo);margin-top:13px;
   display:flex;justify-content:space-between;gap:14px;
 }
-.francobollo .valore{color:var(--rosso);font-weight:500}
+.francobollo .valore{color:var(--rosso-cupo);font-weight:500}
 
 /* --- la cartolina: bordo posta aerea.
    Sottile per forza: rosso e azzurro sono inchiostri, non vernici, e
@@ -204,8 +215,10 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .insegna{display:flex;align-items:center;gap:12px;text-decoration:none;flex:0 0 auto}
 .insegna svg{width:28px;height:28px;flex:0 0 auto}
 .insegna .nome{font-size:19px;font-weight:300;letter-spacing:.05em;line-height:1;
-  font-variation-settings:"SOFT" 40,"WONK" 1}
-.insegna .sotto-nome{display:block;font-family:"DM Mono",monospace;font-size:9px;font-weight:400;
+  /* wonk spento: sotto i 24px le lettere storte non si leggono come
+     carattere, si leggono come difetto. Sta acceso solo sui titoli. */
+  font-variation-settings:"SOFT" 40,"WONK" 0}
+.insegna .sotto-nome{display:block;font-family:"DM Mono",monospace;font-size:10px;font-weight:400;
   letter-spacing:.2em;text-transform:uppercase;color:var(--fumo);margin-top:5px}
 .menu{display:flex;gap:19px;margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
 .menu a{text-decoration:none;padding:4px 0;border-bottom:1px solid transparent}
@@ -217,7 +230,9 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    se no le ultime voci del menu ci finiscono sotto */
 @media (min-width:901px) and (max-width:1099px){.testata .riga{padding-right:214px}}
 .verifica{
-  font-family:"DM Mono",monospace;background:var(--rosso);color:#fff;text-decoration:none;white-space:nowrap;
+  /* un filo piu' cupo del rosso di marca: bianco su #D14A38 sta a 4,42:1
+     e il testo del bottone e' maiuscolo a 11px, quindi serve 4,5.     */
+  font-family:"DM Mono",monospace;background:#D04432;color:#fff;text-decoration:none;white-space:nowrap;
   padding:11px 18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
 }
 .verifica:hover{background:var(--rosso-cupo)}
@@ -335,7 +350,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   .testata.su-notte .insegna,
   .testata.su-notte .menu a{color:var(--notte-testo)}
   .testata.su-notte .insegna .sotto-nome,
-  .testata.su-notte .telefono{color:var(--sera-fumo,#B9C7CE)}
+  .testata.su-notte .telefono{color:var(--sera-fumo,#C5D1D6)}
 
   /* nascosto e mostrato con la stessa specificità della regola del colore,
      se no .testata .telefono{opacity:.6} vince e il telefono non si
@@ -501,7 +516,10 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   display:flex;align-items:center;justify-content:center;gap:12px;margin:1.6em 0 0;
   font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--fumo);
 }
-.avanzamento .passo{color:var(--rosso)}
+/* a 11px il rosso di marca sta a 4,24:1 sul campo e a 3,60:1 sulla carta.
+   Sotto i 12px si usa il cupo, che e' lo stesso rosso piu' carico:
+   5,34:1 sulla carta e 6,29:1 sul campo. */
+.avanzamento .passo{color:var(--rosso-cupo)}
 .avanzamento .riga{width:180px;height:1px;background:var(--filo);position:relative}
 .avanzamento .riga i{
   position:absolute;inset:0;background:var(--rosso);
@@ -591,7 +609,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
    non delle tre di notte. Fondo azzurro cupo — un crepuscolo, e un colore
    della palette invece di un buio generico. */
 .buio{
-  --sera-fumo:#B9C7CE;
+  --sera-fumo:#C5D1D6;   /* era #B9C7CE: 4,15:1 sull'azzurro cupo */
   background:var(--azzurro-cupo);color:var(--notte-testo);
   min-height:100vh;display:grid;align-items:center;
 }
@@ -651,7 +669,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 }
 .camera .nome{
   font-family:Fraunces,Georgia,serif;font-weight:200;font-size:clamp(19px,1.7vw,26px);
-  font-variation-settings:"SOFT" 40,"WONK" 1;letter-spacing:-.015em;
+  font-variation-settings:"SOFT" 40,"WONK" 0;letter-spacing:-.015em;
 }
 .camera .prezzo-da{
   font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.14em;
@@ -797,7 +815,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   }
   .luogo .distanze p{flex:1;min-width:0}
   .luogo .distanze b{font-size:clamp(30px,9vw,42px)}
-  .luogo .distanze span{font-size:9px;letter-spacing:.1em}
+  .luogo .distanze span{font-size:10px;letter-spacing:.1em}
   /* Il retro della cartolina qui non entra: a 360px l'indirizzo va a
      capo e il cartoncino si mangia 291px dei 640 disponibili. È un
      oggetto decorativo — l'indirizzo sta nel piede e nell'H2 — e la
@@ -840,8 +858,12 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 }
 .doppia .didascalie{
   position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;
-  padding:10px 12px;font-family:"DM Mono",monospace;font-size:9px;
+  /* Bianco sopra una fotografia non e' leggibile per definizione: dipende
+     dalla foto, e la foto vera non c'e' ancora. Il velo in basso lo rende
+     sicuro qualunque scatto arrivi. */
+  padding:30px 12px 10px;font-family:"DM Mono",monospace;font-size:10px;
   letter-spacing:.24em;text-transform:uppercase;color:#fff;pointer-events:none;
+  background:linear-gradient(to top, rgba(20,17,14,.72), rgba(20,17,14,0));
 }
 .doppia .didascalie span{transition:opacity .3s ease}
 /* Resta UN riquadro solo a ogni larghezza: due scatti sovrapposti e un
