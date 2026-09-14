@@ -220,7 +220,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   font-family:"DM Mono",monospace;background:var(--rosso);color:#fff;text-decoration:none;white-space:nowrap;
   padding:11px 18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
 }
-.verifica:hover{background:#24633e}
+.verifica:hover{background:var(--rosso-cupo)}
 .apri{display:none;background:none;border:0;padding:9px;cursor:pointer}
 .apri span{display:block;width:21px;height:1px;background:var(--inchiostro);margin:5px 0}
 
@@ -358,6 +358,9 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
     left:clamp(28px,2.6vw,46px);bottom:clamp(30px,3.4vh,48px);z-index:41;
     width:calc(var(--corsia) - clamp(28px,2.6vw,46px) - clamp(20px,1.6vw,30px));
     text-align:center;padding:13px 8px;font-size:10px;letter-spacing:.09em;
+    /* «Vedi se c'è posto» non sta su una riga sola in una corsia stretta:
+       nowrap la farebbe sbordare invece di mandarla a capo.            */
+    white-space:normal;line-height:1.5;
   }
 }
 
@@ -428,6 +431,21 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 .risveglio .identita{margin-top:2.4em;font-family:"DM Mono",monospace;font-size:11.5px;
   letter-spacing:.18em;text-transform:uppercase;color:#6A6055;max-width:34em}
 .risveglio .identita b{color:var(--inchiostro);font-weight:500}
+/* La riga che all'eroe mancava. Il documento di struttura la chiede —
+   prezzo minimo e cosa e' incluso — e non c'era: il «da 40 €» compariva
+   sette volte nel sito e zero volte nell'unico punto dove uno decide.
+   E' anche l'unica riga dell'eroe scritta per essere letta e non
+   guardata, quindi sta in tondo e in una misura che si legge.      */
+.risveglio .promessa{
+  margin:1.15em 0 0;max-width:27em;text-wrap:balance;
+  font-size:clamp(16px,1.3vw,19px);line-height:1.55;color:var(--inchiostro);
+}
+.risveglio .eroe-azione{display:inline-block;margin-top:2.3em}
+@media (max-width:900px){
+  /* da telefono il bottone sta gia' nella barra in fondo, sempre a tiro */
+  .risveglio .eroe-azione{display:none}
+  .risveglio .promessa{font-size:15px;margin-top:.9em;max-width:none}
+}
 
 /* ============================================================
    LA COLAZIONE — la crostata al centro, come un piatto
@@ -1025,7 +1043,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
 </header>
 <!-- fuori dalla testata: la corsia si fonde in difference col fondo, e il
      rosso dentro una fusione diventerebbe un colore qualsiasi -->
-<a class="verifica principale" href="/prenota">Verifica le date</a>
+<a class="verifica principale" href="/prenota">Vedi se c'è posto</a>
 
 <!-- ============ INDICE DELLE SEZIONI ============ -->
 <nav class="ore" id="ore" aria-label="Le sezioni">
@@ -1049,13 +1067,19 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
     <div class="contenitore">
       <div>
         <!-- funzionale: è questo che indicizza -->
-        <h1 id="t-risveglio" class="sr-solo">Hotel 3 stelle a Misano Adriatico</h1>
-        <!-- narrativo: è questo che si vede -->
-        <p class="display" aria-hidden="true">Ti svegli e <em>non devi essere da nessuna parte</em></p>
+        <h1 id="t-risveglio" class="sr-solo">Hotel 3 stelle a gestione familiare a Misano Adriatico</h1>
+        <!-- narrativo: è questo che si vede.
+             «la giornata è tua» apre l'argomento che le due sezioni dopo
+             dimostrano: la mattina fino a mezzogiorno e la sera fino alle
+             sette. La pagina diventa una frase sola. -->
+        <p class="display" aria-hidden="true">Ti svegli, <em>e la giornata è tua</em></p>
+        <p class="promessa" aria-hidden="true">Colazione fino a mezzogiorno, camera fino alle
+        sette di sera. Da 40 € a persona.</p>
         <p class="identita">
           <b>Tre stelle</b> a gestione familiare · Misano Adriatico ·
           <b>dal 1980</b> · <b>8,4</b> su Booking
         </p>
+        <a class="verifica eroe-azione" href="#prenota">Vedi se c'è posto</a>
       </div>
     </div>
   </div>
@@ -1273,8 +1297,9 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
       </div>
       <h2 id="t-famiglia" class="sr-solo">Hotel tre stelle a gestione familiare dal 1980</h2>
       <p class="display" aria-hidden="true">Dietro il banco <em>c'è sempre qualcuno di famiglia</em></p>
-      <p class="testo">Aperto nel 1980, stessa famiglia da allora. È il motivo per cui
-      quasi tutte le recensioni finiscono per parlare di due cose: la colazione e i proprietari.</p>
+      <p class="testo">Aperto nel 1980, stessa famiglia da allora. Chi ti dà la chiave non cambia
+      con la stagione, e nelle recensioni si vede: finiscono quasi tutte per parlare
+      delle stesse due cose, la colazione e i proprietari.</p>
       <p class="voto-grande"><b>8,4</b> <span>su Booking</span></p>
       <blockquote class="segnaposto">
         <span class="tipo">Citazione</span>
@@ -1296,7 +1321,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
       <span class="conta">05 / 07</span>
     </div>
     <h2 id="t-dove" class="sr-solo">A 800 m dalla spiaggia, 150 m dalla stazione, 5 minuti dal Misano World Circuit</h2>
-    <p class="display" aria-hidden="true">Il mare è di là <em>e il treno è dietro l'angolo</em></p>
+    <p class="display" aria-hidden="true">Ci arrivi a piedi, <em>anche con le valigie</em></p>
 
     <div class="luogo">
     <div class="bussola">
@@ -1394,7 +1419,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
       <span class="conta">06 / 07</span>
     </div>
     <h2 id="t-camere" class="sr-solo">Camere singole, matrimoniali, triple, quadruple e deluxe da 40 € a persona</h2>
-    <p class="display" aria-hidden="true">Cinque modi di dormirci <em>e nessuno costa una fortuna</em></p>
+    <p class="display" aria-hidden="true">Cinque camere, <em>tutte con il balcone</em></p>
 
     <div class="camere-pista">
       <div class="camere-listino">
@@ -1407,9 +1432,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           </div>
           <div class="riga-dati">
             <span class="nome">La singola</span>
-            <span class="prezzo-da">da 40 €</span>
+            <span class="prezzo-da">1 persona</span>
           </div>
-          <span class="letti">1 persona</span>
         </figure>
         <figure class="camera">
           <div class="posto chiaro" style="--tinta:var(--foto-caldo)"
@@ -1420,9 +1444,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           </div>
           <div class="riga-dati">
             <span class="nome">La matrimoniale</span>
-            <span class="prezzo-da">da 40 €</span>
+            <span class="prezzo-da">2 persone</span>
           </div>
-          <span class="letti">2 persone</span>
         </figure>
         <figure class="camera">
           <div class="posto" style="--tinta:var(--foto-cupo)"
@@ -1433,9 +1456,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           </div>
           <div class="riga-dati">
             <span class="nome">La tripla</span>
-            <span class="prezzo-da">da 40 €</span>
+            <span class="prezzo-da">3 persone</span>
           </div>
-          <span class="letti">3 persone</span>
         </figure>
         <figure class="camera">
           <div class="posto" style="--tinta:var(--foto-freddo)"
@@ -1446,9 +1468,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           </div>
           <div class="riga-dati">
             <span class="nome">La quadrupla</span>
-            <span class="prezzo-da">da 40 €</span>
+            <span class="prezzo-da">4 persone</span>
           </div>
-          <span class="letti">4 persone</span>
         </figure>
         <figure class="camera">
           <div class="posto chiaro" style="--tinta:var(--foto-caldo)"
@@ -1459,9 +1480,8 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           </div>
           <div class="riga-dati">
             <span class="nome">La deluxe</span>
-            <span class="prezzo-da">da 40 €</span>
+            <span class="prezzo-da">2–3 persone</span>
           </div>
-          <span class="letti">2–3 persone</span>
         </figure>
       </div>
     </div>
@@ -1490,13 +1510,13 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
           <option>1</option><option selected>2</option><option>3</option><option>4</option>
         </select>
       </div>
-      <button class="verifica" type="submit" style="border:0;cursor:pointer">Verifica le date</button>
+      <button class="verifica" type="submit" style="border:0;cursor:pointer">Vedi se c'è posto</button>
     </form>
 
     <p class="altre-vie">
       Oppure chiama <a href="tel:+390541613228">0541 613228</a> ·
       scrivi su <a href="https://wa.me/390541613228">WhatsApp</a> ·
-      nessuna commissione, si prenota con noi
+      rispondiamo noi, non un centralino
     </p>
   </div>
 </section>
@@ -1532,7 +1552,7 @@ ul.tag li+li::before{content:'/';color:var(--rosso);margin:0 .85em}
   <a href="tel:+390541613228" style="color:var(--rosso)">0541 613228</a>
 </div>
 <div class="barra">
-  <a class="verifica" href="/prenota">Verifica le date</a>
+  <a class="verifica" href="/prenota">Vedi se c'è posto</a>
   <button class="apri" style="display:block" id="apri2" aria-label="Apri il menu"><span></span><span></span></button>
 </div>
 
